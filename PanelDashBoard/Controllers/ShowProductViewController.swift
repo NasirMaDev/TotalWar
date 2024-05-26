@@ -7,7 +7,7 @@
 //
 
 struct allProducts{
-   
+    
     var barCode : String?
     var barCodePictureUrl : String?
 }
@@ -15,18 +15,35 @@ struct allProducts{
 import UIKit
 import SVProgressHUD
 
-class ShowProductViewController: UIViewController {
-
-    @IBOutlet weak var ShowProductCollectionView:UICollectionView!
+class ShowProductViewController: UIViewController, UISearchBarDelegate {
     
-    var AllProducts = [NSDictionary]()
+    @IBOutlet weak var ShowProductCollectionView:UICollectionView!
+    @IBOutlet weak var searchBar: UISearchBar!
+    var timer: Timer?
+    var AllProducts = [Product]()
+    var filteredData = [Product]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        title = "All Products"
         self.GetAllProducts()
-        // Do any additional setup after loading the view.
+        
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        
+        searchBar.layer.cornerRadius = 10
+        let searchTextField:UITextField = searchBar.value(forKey: "searchField") as? UITextField ?? UITextField()
+        searchTextField.layer.cornerRadius = 15
+        searchTextField.textAlignment = NSTextAlignment.left
+        let image:UIImage = UIImage(named: "searchIcon")!
+        let imageView:UIImageView = UIImageView.init(image: image)
+        searchTextField.leftView = nil
+        
+        searchTextField.rightView = imageView
+        searchBar.delegate = self
+        //searchTextField.rightViewMode = UITextField.ViewMode.always
+        //searchBar.searchTextField.rightView = UIImageView.init(image: UIImage.init(named: "searchIcon"))
     }
+    
     
     override func viewWillDisappear(_ animated: Bool) {
         SVProgressHUD.dismiss()
@@ -43,61 +60,69 @@ class ShowProductViewController: UIViewController {
             return
         }
         guard let StartingColumn = UserDefaults.standard.value(forKey: "StartingColumn") else {
-           return
+            return
         }
-      
+        
         
         guard let BaseURL = UserDefaults.standard.value(forKey: "BaseURL") else {
             return
         }
         
         RemoteRequest.requestPostURL("\(BaseURL)\(Constant.helperURL)", params: ["action":"getSheetsProductsWithUrl","spreadSheetId":SheetID,"sheetName":SheetName,"barCodeSearchColumn":StartingColumn], success: { response in
-             
-                print(response)
-            let newResponseArray = (response as! NSDictionary).value(forKey: "allProducts")
-
-            self.AllProducts = newResponseArray as! [NSDictionary]
-            self.ShowProductCollectionView.reloadData()
+            
+            print(response)
+            if let allProducts = (response as? NSDictionary)?.value(forKey: "allProducts") as? [NSDictionary] {
+                self.AllProducts = allProducts.compactMap { Product(dictionary: $0) }
+                self.filteredData = self.AllProducts
+                self.ShowProductCollectionView.reloadData()
+            }
             SVProgressHUD.dismiss()
-                    
-                }) { error in
-                    
-                }
-         
+            
+        }) { error in
+            
+        }
+        
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false, block: { [weak self] _ in
+            self?.filterData(searchText: searchText)
+        })
     }
-    */
-
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        filteredData = AllProducts
+        ShowProductCollectionView.reloadData()
+    }
+    
+    // Filter data based on search text
+    func filterData(searchText: String) {
+        if searchText.isEmpty {
+            filteredData = AllProducts
+        } else {
+            filteredData = AllProducts.filter { $0.barCode.lowercased().contains(searchText.lowercased()) }
+        }
+        ShowProductCollectionView.reloadData()
+    }
+    
 }
 
 extension ShowProductViewController:UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{
-   
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return AllProducts.count
+        return filteredData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = (self.ShowProductCollectionView.dequeueReusableCell(withReuseIdentifier: "ShowProductsCell", for: indexPath) as? ShowProductCell)!
-        cell.lblBarCode.text = self.AllProducts[indexPath.row].value(forKey: "barCode") as? String
-        let imgURl = self.AllProducts[indexPath.row].value(forKey: "barCodePictureUrl") as? String
-       
-        cell.imgBarCode.downloaded(from: imgURl!)
-
+        let product = self.filteredData[indexPath.row]
+        let imgURl = product.barCodePictureUrl!
+        cell.imgBarCode.downloaded(from: imgURl)
+        cell.productName.text = product.barCode
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 160, height: 160)
-    }
-    
     
     
 }
@@ -111,7 +136,7 @@ extension UIImageView {
                 let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
                 let data = data, error == nil,
                 let image = UIImage(data: data)
-                else { return }
+            else { return }
             DispatchQueue.main.async() { [weak self] in
                 self?.image = image
             }

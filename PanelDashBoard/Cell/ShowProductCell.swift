@@ -10,6 +10,7 @@ import UIKit
 
 class ShowProductCell: UICollectionViewCell {
     
-    @IBOutlet weak var lblBarCode:UILabel!
     @IBOutlet weak var imgBarCode:UIImageView!
+    @IBOutlet weak var productName: UILabel!
+    @IBOutlet weak var productPrice: UILabel!
 }

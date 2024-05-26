@@ -12,35 +12,37 @@ import SVProgressHUD
 @available(iOS 13.0, *)
 class WelcomeViewController: UIViewController {
     
-    @IBOutlet weak var logoutview: UIView!
-    @IBOutlet weak var customerview: UIView!
-    @IBOutlet weak var productview: UIView!
-    @IBOutlet weak var backview: UIView!
-    @IBOutlet weak var scanItemButton: UIButton!
-    @IBOutlet weak var saveItemButton: UIButton!
+//    @IBOutlet weak var logoutview: UIView!
+//    @IBOutlet weak var customerview: UIView!
+//    @IBOutlet weak var productview: UIView!
+//    @IBOutlet weak var backview: UIView!
+//    @IBOutlet weak var scanItemButton: UIButton!
+//    @IBOutlet weak var saveItemButton: UIButton!
+    @IBOutlet weak var manageProductView: UIStackView!
+    @IBOutlet weak var uploadProductView: UIStackView!
+    @IBOutlet weak var scanCodeView: UIStackView!
+    @IBOutlet weak var enhanceView: UIStackView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        backview.layer.cornerRadius = 15
-        customerview.layer.cornerRadius = 15
-        productview.layer.cornerRadius = 15
-        logoutview.layer.cornerRadius = 15
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(allproductsPressed))
+        manageProductView.isUserInteractionEnabled = true
+        manageProductView.addGestureRecognizer(tapGesture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        manageSaveItemButton()
+        //manageSaveItemButton()
     }
     
-    //MARK: Button action methods
-    @IBAction func allproductsPressed(_ sender: Any) {
+
+    @objc func allproductsPressed() {
         print("Show All products pressed")
         let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
-        let vc : ShowProductViewController = storyboard.instantiateViewController(withIdentifier: "ShowProductsViewController") as! ShowProductViewController
+        let vc : ShowProductViewController = storyboard.instantiateViewController(withIdentifier: "ShowProductViewController") as! ShowProductViewController
         navigationController?.pushViewController(vc, animated: true)
-        
     }
     
-    @IBAction func SettingButtonClick(_ sender: Any) {
+    func SettingButtonClick() {
         print("Setting Button pressed")
         let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
         let vc : SettingViewController = storyboard.instantiateViewController(withIdentifier: "SettingViewController") as! SettingViewController
@@ -48,7 +50,7 @@ class WelcomeViewController: UIViewController {
         
     }
     
-    @IBAction func addproducts(_ sender: Any) {
+    func addproducts() {
         print("add product pressed")
         let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
         let vc : AddProductsViewController = storyboard.instantiateViewController(withIdentifier: "AddProductsViewController") as! AddProductsViewController
@@ -56,59 +58,59 @@ class WelcomeViewController: UIViewController {
         
     }
     
-    @IBAction func scanItemAction(_ sender: Any) {
-        showBarcodeScanner()
-    }
-    
-    @IBAction func saveItemAction(_ sender: Any) {
-        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
-        let vc : SaveItemsViewController = storyboard.instantiateViewController(withIdentifier: "SaveItemsViewController") as! SaveItemsViewController
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    //MARK: Other class instance methods
-    
-    func manageSaveItemButton() {
-        self.saveItemButton.isHidden = appDelegate?.scannedItems.count == 0
-        self.saveItemButton.isHidden = false
-    }
-    
-    func showBarcodeScanner(){
-        let viewController = BarcodeScannerViewController()
-        viewController.cameraViewController.barCodeFocusViewType = .animated
-        viewController.codeDelegate = self
-        viewController.errorDelegate = self
-        viewController.dismissalDelegate = self
-        viewController.isOneTimeSearch = false
-        viewController.messageViewController.regularTintColor = .black
-        viewController.messageViewController.errorTintColor = .red
-        viewController.messageViewController.textLabel.textColor = .black
-        viewController.headerViewController.titleLabel.text = "Scan item barcode"
-        viewController.headerViewController.closeButton.tintColor = .red
-        present(viewController, animated: false, completion: nil)
-    }
+//    @IBAction func scanItemAction(_ sender: Any) {
+//        showBarcodeScanner()
+//    }
+//    
+//    @IBAction func saveItemAction(_ sender: Any) {
+//        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
+//        let vc : SaveItemsViewController = storyboard.instantiateViewController(withIdentifier: "SaveItemsViewController") as! SaveItemsViewController
+//        navigationController?.pushViewController(vc, animated: true)
+//    }
+//    
+//    //MARK: Other class instance methods
+//    
+//    func manageSaveItemButton() {
+//        self.saveItemButton.isHidden = appDelegate?.scannedItems.count == 0
+//        self.saveItemButton.isHidden = false
+//    }
+//    
+//    func showBarcodeScanner(){
+//        let viewController = BarcodeScannerViewController()
+//        viewController.cameraViewController.barCodeFocusViewType = .animated
+//        viewController.codeDelegate = self
+//        viewController.errorDelegate = self
+//        viewController.dismissalDelegate = self
+//        viewController.isOneTimeSearch = false
+//        viewController.messageViewController.regularTintColor = .black
+//        viewController.messageViewController.errorTintColor = .red
+//        viewController.messageViewController.textLabel.textColor = .black
+//        viewController.headerViewController.titleLabel.text = "Scan item barcode"
+//        viewController.headerViewController.closeButton.tintColor = .red
+//        present(viewController, animated: false, completion: nil)
+//    }
     
 }
 
-extension WelcomeViewController: BarcodeScannerCodeDelegate {
-    func scanner(_ controller: BarcodeScannerViewController, didCaptureCode code: String, type: String) {
-        print(code)
-        appDelegate?.scannedItems.append(code)
-        let unique = appDelegate?.scannedItems.uniqued()
-        appDelegate?.scannedItems = unique ?? []
-        manageSaveItemButton()
-    }
-}
-
-extension WelcomeViewController: BarcodeScannerErrorDelegate {
-    func scanner(_ controller: BarcodeScannerViewController, didReceiveError error: Error) {
-        print(error)
-    }
-}
-
-extension WelcomeViewController: BarcodeScannerDismissalDelegate {
-    func scannerDidDismiss(_ controller: BarcodeScannerViewController) {
-        controller.dismiss(animated: true, completion: nil)
-        manageSaveItemButton()
-    }
-}
+//extension WelcomeViewController: BarcodeScannerCodeDelegate {
+//    func scanner(_ controller: BarcodeScannerViewController, didCaptureCode code: String, type: String) {
+//        print(code)
+//        appDelegate?.scannedItems.append(code)
+//        let unique = appDelegate?.scannedItems.uniqued()
+//        appDelegate?.scannedItems = unique ?? []
+//        manageSaveItemButton()
+//    }
+//}
+//
+//extension WelcomeViewController: BarcodeScannerErrorDelegate {
+//    func scanner(_ controller: BarcodeScannerViewController, didReceiveError error: Error) {
+//        print(error)
+//    }
+//}
+//
+//extension WelcomeViewController: BarcodeScannerDismissalDelegate {
+//    func scannerDidDismiss(_ controller: BarcodeScannerViewController) {
+//        controller.dismiss(animated: true, completion: nil)
+//        manageSaveItemButton()
+//    }
+//}
