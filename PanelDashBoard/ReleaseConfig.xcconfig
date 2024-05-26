@@ -1,0 +1,12 @@
+//
+//  ReleaseConfig.xcconfig
+//  TopWarGame
+//
+//  Created by Nasir Bin Tahir on 26/05/2024.
+//  Copyright © 2024 Asjd. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+Secret_Key_AWS = BxHowP9WU1ksuBKyMOPJNxA6zG1IikiRV88imJ/w
+Access_Key_AWS = AKIA5YHOJB7E3Y6SENU6

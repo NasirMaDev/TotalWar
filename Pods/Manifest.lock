@@ -1,0 +1,42 @@
+PODS:
+  - Alamofire (4.7.3)
+  - AWSCognito (2.19.1):
+    - AWSCore (= 2.19.1)
+  - AWSCore (2.19.1)
+  - AWSS3 (2.19.1):
+    - AWSCore (= 2.19.1)
+  - IQKeyboardManagerSwift (6.5.9)
+  - OpalImagePicker (1.5.0)
+  - SVProgressHUD (2.2.5)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.7.3)
+  - AWSCognito
+  - AWSCore
+  - AWSS3
+  - IQKeyboardManagerSwift
+  - OpalImagePicker (~> 1.5.0)
+  - SVProgressHUD
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - AWSCognito
+    - AWSCore
+    - AWSS3
+    - IQKeyboardManagerSwift
+    - OpalImagePicker
+    - SVProgressHUD
+
+SPEC CHECKSUMS:
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  AWSCognito: f50de600804941d083af37a7568905f31a774727
+  AWSCore: 55c154ae27efc5c98bdc30a0eeea5a35d10a2ab5
+  AWSS3: 2272253b098d07803af8dd20ce6ce7302bcffb47
+  IQKeyboardManagerSwift: 6e839c575c4aa1078d58a596e41244e77abe918f
+  OpalImagePicker: 0fb2caaa4386524eef1b7979aebebd3ad0a27ef1
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+
+PODFILE CHECKSUM: 5fb0951a3a938eaa60805abbf95d10ad922a9c31
+
+COCOAPODS: 1.14.3

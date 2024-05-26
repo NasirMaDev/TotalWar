@@ -1,0 +1,3 @@
+${PODS_ROOT}/Target Support Files/Pods-PanelDashBoard/Pods-PanelDashBoard-resources.sh
+${PODS_CONFIGURATION_BUILD_DIR}/OpalImagePicker/OpalImagePickerResources.bundle
+${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle
