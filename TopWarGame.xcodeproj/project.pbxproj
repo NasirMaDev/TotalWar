@@ -32,6 +32,7 @@
 		226B8B6C2C034FE90051EA7D /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226B8B5A2C034FE90051EA7D /* Poppins-Black.ttf */; };
 		226B8B6D2C034FE90051EA7D /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226B8B5B2C034FE90051EA7D /* Poppins-ExtraBoldItalic.ttf */; };
 		226B8B6E2C034FE90051EA7D /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226B8B5C2C034FE90051EA7D /* Poppins-Light.ttf */; };
+		22C006B42C04D95700F83F7D /* ImageEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C006B32C04D95700F83F7D /* ImageEditViewController.swift */; };
 		22DA25192C03AE8B003FA4C2 /* ProductModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DA25182C03AE8B003FA4C2 /* ProductModel.swift */; };
 		22E7E5FF2C035F000059C944 /* Sora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 22E7E5FE2C035F000059C944 /* Sora-Regular.ttf */; };
 		32DBABB117D84D04DC5F9604 /* Pods_PanelDashBoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A60BE27136A9DC9691F04BD /* Pods_PanelDashBoard.framework */; };
@@ -97,6 +98,7 @@
 		226B8B5A2C034FE90051EA7D /* Poppins-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Black.ttf"; sourceTree = "<group>"; };
 		226B8B5B2C034FE90051EA7D /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		226B8B5C2C034FE90051EA7D /* Poppins-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Light.ttf"; sourceTree = "<group>"; };
+		22C006B32C04D95700F83F7D /* ImageEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditViewController.swift; sourceTree = "<group>"; };
 		22DA25182C03AE8B003FA4C2 /* ProductModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductModel.swift; sourceTree = "<group>"; };
 		22E7E5FE2C035F000059C944 /* Sora-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Regular.ttf"; sourceTree = "<group>"; };
 		24C55F9442E160B5105ACBB8 /* Pods-PanelDashBoard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PanelDashBoard.debug.xcconfig"; path = "Target Support Files/Pods-PanelDashBoard/Pods-PanelDashBoard.debug.xcconfig"; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 				2248E1252C0354F700DAA931 /* LoginViewController.swift */,
 				221712332C03637000865858 /* MyTabBarController.swift */,
 				6403D7702C0492CE00C83E41 /* CameraViewControllerNew.swift */,
+				22C006B32C04D95700F83F7D /* ImageEditViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -534,6 +537,7 @@
 				FD78029927A095DD0084FB1F /* FocusViewType.swift in Sources */,
 				5EA7836B2754BEFF00525D14 /* Constant.swift in Sources */,
 				FD7802A327A095DD0084FB1F /* VideoPermissionService.swift in Sources */,
+				22C006B42C04D95700F83F7D /* ImageEditViewController.swift in Sources */,
 				221712322C03635100865858 /* CustomizedTabBar.swift in Sources */,
 				FD7802A027A095DD0084FB1F /* MessageViewController.swift in Sources */,
 				5E81ADCC274F9F0800D5720A /* WebServices.swift in Sources */,
@@ -709,7 +713,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = HFZW53KPR6;
+				DEVELOPMENT_TEAM = X874GAZABK;
 				INFOPLIST_FILE = PanelDashBoard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TopWarGame;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -718,7 +722,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.total-wargame.panel123";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.total-wargame.panel321";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -737,7 +741,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = HFZW53KPR6;
+				DEVELOPMENT_TEAM = X874GAZABK;
 				INFOPLIST_FILE = PanelDashBoard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TopWarGame;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -746,7 +750,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.total-wargame.panel123";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.total-wargame.panel321";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

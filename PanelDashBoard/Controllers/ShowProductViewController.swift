@@ -27,8 +27,6 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
         super.viewDidLoad()
         self.GetAllProducts()
         
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
-        
         
         searchBar.layer.cornerRadius = 10
         let searchTextField:UITextField = searchBar.value(forKey: "searchField") as? UITextField ?? UITextField()
@@ -44,6 +42,9 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
         //searchBar.searchTextField.rightView = UIImageView.init(image: UIImage.init(named: "searchIcon"))
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+    }
     
     override func viewWillDisappear(_ animated: Bool) {
         SVProgressHUD.dismiss()
@@ -110,12 +111,38 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
             self.ShowProductCollectionView.reloadData()
         }
     }
+    
+    func showBarcodeScanner(){
+        let viewController = BarcodeScannerViewController()
+        viewController.cameraViewController.barCodeFocusViewType = .animated
+        viewController.codeDelegate = self
+        viewController.errorDelegate = self
+        viewController.dismissalDelegate = self
+        viewController.isOneTimeSearch = false
+        viewController.messageViewController.regularTintColor = .black
+        viewController.messageViewController.errorTintColor = .red
+        viewController.messageViewController.textLabel.textColor = .black
+        viewController.headerViewController.titleLabel.text = "Scan item barcode"
+        viewController.headerViewController.closeButton.tintColor = .red
+        present(viewController, animated: false, completion: nil)
+    }
+        
+    //MARK: IBActions
+        
 
     @IBAction func backPressed(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
     
-
+    @IBAction func showScanner(_ sender: Any) {
+        showBarcodeScanner()
+    }
+    
+    @IBAction func addProductPressed(_ sender: Any) {
+        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let vc : AddProductsViewController = storyboard.instantiateViewController(withIdentifier: "AddProductsViewController") as! AddProductsViewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 extension ShowProductViewController:UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{
@@ -154,5 +181,28 @@ extension UIImageView {
     func downloaded(from link: String, contentMode mode: ContentMode = .scaleAspectFit) {
         guard let url = URL(string: link) else { return }
         downloaded(from: url, contentMode: mode)
+    }
+}
+
+extension ShowProductViewController: BarcodeScannerCodeDelegate {
+    func scanner(_ controller: BarcodeScannerViewController, didCaptureCode code: String, type: String) {
+        print(code)
+        appDelegate?.scannedItems.append(code)
+        let unique = appDelegate?.scannedItems.uniqued()
+        appDelegate?.scannedItems = unique ?? []
+        //manageSaveItemButton()
+    }
+}
+
+extension ShowProductViewController: BarcodeScannerErrorDelegate {
+    func scanner(_ controller: BarcodeScannerViewController, didReceiveError error: Error) {
+        print(error)
+    }
+}
+
+extension ShowProductViewController: BarcodeScannerDismissalDelegate {
+    func scannerDidDismiss(_ controller: BarcodeScannerViewController) {
+        controller.dismiss(animated: true, completion: nil)
+       //manageSaveItemButton()
     }
 }

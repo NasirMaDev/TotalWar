@@ -43,6 +43,7 @@ class WelcomeViewController: UIViewController {
         print("Show All products pressed")
         let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
         let vc : ShowProductViewController = storyboard.instantiateViewController(withIdentifier: "ShowProductViewController") as! ShowProductViewController
+        vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
     }
     

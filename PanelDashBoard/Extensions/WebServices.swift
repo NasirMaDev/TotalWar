@@ -36,6 +36,50 @@ class RemoteRequest: NSObject {
             
         }
     }
+    
+    class func requestPostURL(_ strURL: String, headers: HTTPHeaders, params: [String : Any], success:@escaping (Any) -> Void, failure:@escaping (NSError) -> Void) {
+        
+        var request = URLRequest(url: NSURL(string: strURL)! as URL)
+        request.allHTTPHeaderFields = headers
+        request.timeoutInterval = 20
+        Alamofire.upload(multipartFormData: { (multipartFormData) in
+            for (key, value) in params {
+                    if key == "image", let image = value as? UIImage {
+                        if let imageData = image.jpegData(compressionQuality: 0.2) {
+                            multipartFormData.append(imageData, withName: key, fileName: "image.jpeg", mimeType: "image/jpeg")
+                        }
+                    } else if let stringValue = value as? String {
+                        multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
+                    }
+                }
+        }, to: strURL ,method: .post,headers: headers) { response in
+            switch response {
+            case .success(let upload, _, _):
+                
+                upload.uploadProgress(closure: { (progress) in
+                    print("Upload Progress: \(progress.fractionCompleted)")
+                })
+                upload.responseJSON
+                {
+                    response in
+                    print("Response :\(response.result.value)")
+                    if let result = response.result.value as? [String: Any],
+                       let data = result["data"] as? [String: Any],
+                       let urlValue = data["url"] as? String {
+                        print("URL: \(urlValue)")
+                        success(urlValue)
+                    } else {
+                        print("Failed to extract URL from response.")
+                    }
+                    
+                }
+                
+            case .failure(let encodingError):
+                print("no Error :\(encodingError)")
+            }
+        }
+    }
+        
         
     class func requestPostURLWithToken(_ strURL: String,params:Parameters, success:@escaping (Any) -> Void, failure:@escaping (NSError) -> Void) {
         let header = [

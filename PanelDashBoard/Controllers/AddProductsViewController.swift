@@ -71,7 +71,7 @@ class AddProductsViewController: UIViewController,UIImagePickerControllerDelegat
        
         CornerRadius()
         searchBarCodeInGSheet()
-        
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
         
     }
     
