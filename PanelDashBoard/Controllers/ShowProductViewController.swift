@@ -94,7 +94,9 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         filteredData = AllProducts
-        ShowProductCollectionView.reloadData()
+        DispatchQueue.main.async {
+            self.ShowProductCollectionView.reloadData()
+        }
     }
     
     // Filter data based on search text
@@ -104,9 +106,16 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
         } else {
             filteredData = AllProducts.filter { $0.barCode.lowercased().contains(searchText.lowercased()) }
         }
-        ShowProductCollectionView.reloadData()
+        DispatchQueue.main.async {
+            self.ShowProductCollectionView.reloadData()
+        }
+    }
+
+    @IBAction func backPressed(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
     
+
 }
 
 extension ShowProductViewController:UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{

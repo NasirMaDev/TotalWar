@@ -54,18 +54,18 @@ class SaveItemsViewController: UIViewController {
     }
     
     func showBarcodeScanner(title: String = "Scan item barcode"){
-        let viewController = BarcodeScannerViewController()
-        viewController.cameraViewController.barCodeFocusViewType = .animated
-        viewController.codeDelegate = self
-        viewController.errorDelegate = self
-        viewController.dismissalDelegate = self
-        viewController.isOneTimeSearch = false
-        viewController.messageViewController.regularTintColor = .black
-        viewController.messageViewController.errorTintColor = .red
-        viewController.messageViewController.textLabel.textColor = .black
-        viewController.headerViewController.titleLabel.text = title
-        viewController.headerViewController.closeButton.tintColor = .red
-        present(viewController, animated: false, completion: nil)
+//        let viewController = BarcodeScannerViewController()
+//        viewController.cameraViewController.barCodeFocusViewType = .animated
+//        viewController.codeDelegate = self
+//        viewController.errorDelegate = self
+//        viewController.dismissalDelegate = self
+//        viewController.isOneTimeSearch = false
+//        viewController.messageViewController.regularTintColor = .black
+//        viewController.messageViewController.errorTintColor = .red
+//        viewController.messageViewController.textLabel.textColor = .black
+//        viewController.headerViewController.titleLabel.text = title
+//        viewController.headerViewController.closeButton.tintColor = .red
+//        present(viewController, animated: false, completion: nil)
     }
     
     func showConfirmationAlert() {

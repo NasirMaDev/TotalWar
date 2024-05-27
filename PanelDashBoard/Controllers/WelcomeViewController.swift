@@ -28,6 +28,10 @@ class WelcomeViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(allproductsPressed))
         manageProductView.isUserInteractionEnabled = true
         manageProductView.addGestureRecognizer(tapGesture)
+
+        let tapGesture3 = UITapGestureRecognizer(target: self, action: #selector(enchancePressed))
+        enhanceView.isUserInteractionEnabled = true
+        enhanceView.addGestureRecognizer(tapGesture3)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +62,15 @@ class WelcomeViewController: UIViewController {
         
     }
     
+
+    @objc func enchancePressed() {
+        print("Enchance with AI pressed")
+        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let vc : CameraViewControllerNew = storyboard.instantiateViewController(withIdentifier: "CameraViewControllerNew") as! CameraViewControllerNew
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
 //    @IBAction func scanItemAction(_ sender: Any) {
 //        showBarcodeScanner()
 //    }
