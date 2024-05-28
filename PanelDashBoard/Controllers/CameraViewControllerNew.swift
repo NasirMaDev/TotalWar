@@ -10,13 +10,13 @@ import UIKit
 import AVFoundation
 
 class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate {
-
+    
     @IBOutlet weak var backBtn: UIButton!
     var captureSession: AVCaptureSession!
     var videoPreviewLayer: AVCaptureVideoPreviewLayer!
     var photoOutput: AVCapturePhotoOutput!
-    var capturedImages: [UIImage] = [UIImage.init(named: "testImage")!]
-
+    var capturedImages: [UIImage] = [UIImage.init(named: "test1")!]
+    
     let captureButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(named: "takeImageIcon"), for: .normal)
@@ -24,7 +24,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
         button.addTarget(self, action: #selector(capturePhoto), for: .touchUpInside)
         return button
     }()
-
+    
     let tickButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("", for: .normal)
@@ -34,7 +34,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
         button.addTarget(self, action: #selector(proceedToNextScreen), for: .touchUpInside)
         return button
     }()
-
+    
     let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 8
@@ -44,7 +44,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -53,12 +53,12 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
         setupUI()
         backBtn.layer.zPosition = 10
     }
-
+    
     func setupCamera() {
         captureSession = AVCaptureSession()
         captureSession.sessionPreset = .photo
         var camera: AVCaptureDevice?
-
+        
         if let backCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
             camera = backCamera
             print("Back camera accessed")
@@ -66,13 +66,13 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
             camera = frontCamera
             print("Back camera is not available, accessing front camera")
         }
-
+        
         guard let camera else {return}
-
+        
         do {
             let input = try AVCaptureDeviceInput(device: camera)
             photoOutput = AVCapturePhotoOutput()
-
+            
             if captureSession.canAddInput(input) && captureSession.canAddOutput(photoOutput) {
                 captureSession.addInput(input)
                 captureSession.addOutput(photoOutput)
@@ -82,13 +82,13 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
             print("Error Unable to initialize back camera:  \(error.localizedDescription)")
         }
     }
-
+    
     func setupLivePreview() {
         videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         videoPreviewLayer.videoGravity = .resizeAspectFill
         videoPreviewLayer.connection?.videoOrientation = .portrait
         view.layer.addSublayer(videoPreviewLayer)
-
+        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.captureSession.startRunning()
             DispatchQueue.main.async {
@@ -96,18 +96,18 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
             }
         }
     }
-
+    
     func setupUI() {
         view.addSubview(captureButton)
         view.addSubview(tickButton)
         view.addSubview(thumbnailImageView)
-
+        
         NSLayoutConstraint.activate([
             captureButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             captureButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             captureButton.widthAnchor.constraint(equalToConstant: 70),
             captureButton.heightAnchor.constraint(equalToConstant: 70),
-
+            
             tickButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
             tickButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor),
             thumbnailImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -115,18 +115,18 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
             thumbnailImageView.widthAnchor.constraint(equalToConstant: 50),
             thumbnailImageView.heightAnchor.constraint(equalToConstant: 50)
         ])
-
-
+        
+        
         thumbnailImageView.isHidden = true
     }
-
+    
     @objc func capturePhoto() {
         let settings = AVCapturePhotoSettings()
         photoOutput.capturePhoto(with: settings, delegate: self)
         thumbnailImageView.isHidden = false
-
+        
     }
-
+    
     @objc func proceedToNextScreen() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let imageEditVC = storyboard.instantiateViewController(withIdentifier: "ImageEditViewController") as? ImageEditViewController {
@@ -134,11 +134,11 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
             self.navigationController?.pushViewController(imageEditVC, animated: true)
         }
     }
-
+    
     @IBAction func backPressed(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
-
+    
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let imageData = photo.fileDataRepresentation() {
             if let image = UIImage(data: imageData) {
