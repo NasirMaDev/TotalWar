@@ -26,20 +26,6 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.GetAllProducts()
-        
-        
-        searchBar.layer.cornerRadius = 10
-        let searchTextField:UITextField = searchBar.value(forKey: "searchField") as? UITextField ?? UITextField()
-        searchTextField.layer.cornerRadius = 15
-        searchTextField.textAlignment = NSTextAlignment.left
-        let image:UIImage = UIImage(named: "searchIcon")!
-        let imageView:UIImageView = UIImageView.init(image: image)
-        searchTextField.leftView = nil
-        
-        searchTextField.rightView = imageView
-        searchBar.delegate = self
-        //searchTextField.rightViewMode = UITextField.ViewMode.always
-        //searchBar.searchTextField.rightView = UIImageView.init(image: UIImage.init(named: "searchIcon"))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,7 +35,29 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         SVProgressHUD.dismiss()
     }
-    
+
+    override func viewDidAppear(_ animated: Bool) {
+        searchBar.delegate = self
+        searchBar.searchTextField.layer.cornerRadius = 25
+        searchBar.searchTextField.layer.masksToBounds = true
+        let searchTextField:UITextField = searchBar.value(forKey: "searchField") as? UITextField ?? UITextField()
+        searchTextField.layer.cornerRadius = 15
+        searchTextField.textAlignment = NSTextAlignment.left
+        let image:UIImage = UIImage(named: "searchIcon")!
+        let imageView:UIImageView = UIImageView.init(image: image)
+        searchTextField.leftView = nil
+        searchTextField.rightView = imageView
+        searchTextField.rightViewMode = UITextField.ViewMode.always
+        searchBar.searchTextField.rightView = UIImageView.init(image: UIImage.init(named: "searchIcon"))
+
+        DispatchQueue.main.async {
+            self.searchBar.layoutSubviews()
+            searchTextField.layoutSubviews()
+            self.searchBar.layoutIfNeeded()
+            searchTextField.layoutIfNeeded()
+        }
+    }
+
     
     func GetAllProducts(){
         
@@ -155,34 +163,32 @@ extension ShowProductViewController:UICollectionViewDelegate,UICollectionViewDel
         let cell = (self.ShowProductCollectionView.dequeueReusableCell(withReuseIdentifier: "ShowProductsCell", for: indexPath) as? ShowProductCell)!
         let product = self.filteredData[indexPath.row]
         let imgURl = product.barCodePictureUrl!
-        cell.imgBarCode.downloaded(from: imgURl)
+        cell.imgBarCode.downloaded(from: imgURl, contentMode: .scaleAspectFit) { result in
+            switch result {
+            case .success(let image):
+                print("Image downloaded successfully: \(image)")
+                //SVProgressHUD.dismiss()
+            case .failure(let error):
+                print("Failed to download image: \(error.localizedDescription)")
+                //SVProgressHUD.dismiss()
+            }
+        }
         cell.productName.text = product.barCode
         return cell
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let numberOfItemsPerRow: CGFloat = 2
+        let spacingBetweenCells: CGFloat = 5
+
+        let totalSpacing = (2 * spacingBetweenCells) + ((numberOfItemsPerRow - 1) * spacingBetweenCells) // Amount of total spacing in a row
+
+        let width = (collectionView.frame.width - totalSpacing) / numberOfItemsPerRow
+
+        return CGSize(width: width, height: width) // Assuming square cells
+    }
 }
 
-extension UIImageView {
-    func downloaded(from url: URL, contentMode mode: ContentMode = .scaleAspectFit) {
-        contentMode = mode
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard
-                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
-                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
-                let data = data, error == nil,
-                let image = UIImage(data: data)
-            else { return }
-            DispatchQueue.main.async() { [weak self] in
-                self?.image = image
-            }
-        }.resume()
-    }
-    func downloaded(from link: String, contentMode mode: ContentMode = .scaleAspectFit) {
-        guard let url = URL(string: link) else { return }
-        downloaded(from: url, contentMode: mode)
-    }
-}
 
 extension ShowProductViewController: BarcodeScannerCodeDelegate {
     func scanner(_ controller: BarcodeScannerViewController, didCaptureCode code: String, type: String) {

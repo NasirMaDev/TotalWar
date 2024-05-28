@@ -29,13 +29,20 @@ class WelcomeViewController: UIViewController {
         manageProductView.isUserInteractionEnabled = true
         manageProductView.addGestureRecognizer(tapGesture)
 
+        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(ScanCode))
+        scanCodeView.isUserInteractionEnabled = true
+        scanCodeView.addGestureRecognizer(tapGesture2)
+
         let tapGesture3 = UITapGestureRecognizer(target: self, action: #selector(enchancePressed))
         enhanceView.isUserInteractionEnabled = true
         enhanceView.addGestureRecognizer(tapGesture3)
+
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         //manageSaveItemButton()
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
 
@@ -54,7 +61,16 @@ class WelcomeViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
         
     }
-    
+
+    @objc func ScanCode() {
+        print("ScanCode pressed")
+        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let vc : ScanViewController = storyboard.instantiateViewController(withIdentifier: "ScanViewController") as! ScanViewController
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
+
+    }
+
     func addproducts() {
         print("add product pressed")
         let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)

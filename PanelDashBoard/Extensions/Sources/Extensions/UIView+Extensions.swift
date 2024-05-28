@@ -131,3 +131,48 @@ extension UIButton {
         }
     }
 }
+
+
+
+extension UIImageView {
+    func downloaded(from url: URL, contentMode mode: ContentMode = .scaleAspectFit, completion: @escaping (Result<UIImage, Error>) -> Void) {
+        contentMode = mode
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+
+            guard
+                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                let data = data,
+                let image = UIImage(data: data)
+            else {
+                let error = NSError(domain: "InvalidImageData", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to load image data"])
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+
+            DispatchQueue.main.async { [weak self] in
+                self?.image = image
+                completion(.success(image))
+            }
+        }.resume()
+    }
+
+    func downloaded(from link: String, contentMode mode: ContentMode = .scaleAspectFit, completion: @escaping (Result<UIImage, Error>) -> Void) {
+        guard let url = URL(string: link) else {
+            let error = NSError(domain: "InvalidURL", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to create URL from string"])
+            DispatchQueue.main.async {
+                completion(.failure(error))
+            }
+            return
+        }
+        downloaded(from: url, contentMode: mode, completion: completion)
+    }
+}
