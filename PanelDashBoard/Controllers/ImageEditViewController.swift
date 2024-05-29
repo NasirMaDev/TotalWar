@@ -14,6 +14,9 @@ class ImageEditViewController: UIViewController {
     @IBOutlet weak var gradientView: UIView!
     @IBOutlet weak var imageToEdit: UIImageView!
     @IBOutlet var editOptionBtns: [UIButton]!
+    @IBOutlet weak var optionLabel: UILabel!
+    @IBOutlet weak var optionSlider: UISlider!
+    @IBOutlet weak var sliderValue: UILabel!
     var image : UIImage?
 
     override func viewDidLoad() {
@@ -65,6 +68,21 @@ class ImageEditViewController: UIViewController {
 
         // Select the tapped button
         sender.isSelected = true
+        switch sender.tag {
+        case 1:
+            optionLabel.text = "Brightness"
+        case 2:
+            optionLabel.text = "Filter"
+        case 3:
+            optionLabel.text = "Saturation"
+        default:
+            optionLabel.text = ""
+        }
     }
+    
+    @IBAction func sliderValueChanged(_ sender: UISlider) {
+        sliderValue.text = "\(sender.value)%"
+    }
+    
     
 }
