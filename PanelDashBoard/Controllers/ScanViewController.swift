@@ -48,8 +48,16 @@ class ScanViewController: UIViewController , CameraViewDelegate {
             gradientLayer.frame = self.gradientView.bounds
             self.backBtn.layer.zPosition = 10
         }
+
+        previewView.resetScanner()
     }
-    
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        previewView.stopScanner()
+    }
+
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -192,12 +200,17 @@ class ScanViewController: UIViewController , CameraViewDelegate {
     
     @objc func nextAction() {
         print("Next button tapped")
+        self.previewView.stopScanner()
         if let popupView = view.subviews.compactMap({ $0 as? BarCodePopup }).first {
             popupView.removeFromSuperview()
         }
         let result = isBarCodePresentInArray(barCode: currentCode, IsBarCodeScan: true)
         debugPrint(result)
-
+        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let vc : CameraViewControllerNew = storyboard.instantiateViewController(withIdentifier: "CameraViewControllerNew") as! CameraViewControllerNew
+        vc.hidesBottomBarWhenPushed = true
+        vc.takeMultiImage = true
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     @IBAction func backPressed(_ sender: Any) {

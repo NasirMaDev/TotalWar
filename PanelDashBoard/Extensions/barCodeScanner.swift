@@ -22,9 +22,9 @@ class CameraView: UIView {
     private var previewLayer: AVCaptureVideoPreviewLayer!
 
     private var scanningRectView: UIView = {
-        let view = UIView()
-        view.layer.borderColor = UIColor.white.cgColor
-        view.layer.borderWidth = 2.0
+        let view = UIImageView()
+        view.image = UIImage.init(named: "focusIcon")
+        view.contentMode = .scaleToFill
         return view
     }()
 
@@ -126,6 +126,12 @@ class CameraView: UIView {
     func resetScanner() {
         DispatchQueue.global(qos: .userInitiated).async {
             self.captureSession.startRunning()
+        }
+    }
+
+    func stopScanner() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.captureSession.stopRunning()
         }
     }
 }

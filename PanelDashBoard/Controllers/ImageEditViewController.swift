@@ -2,83 +2,69 @@
 //  ImageEditViewController.swift
 //  PanelDashBoard
 //
-//  Created by Nasir Bin Tahir on 27/05/2024.
+//  Created by Nasir Bin Tahir on 29/05/2024.
 //  Copyright © 2024 Asjd. All rights reserved.
 //
 
 import UIKit
-import SVProgressHUD
-import Alamofire
 
 class ImageEditViewController: UIViewController {
-    
-    var capturedImages: [UIImage]?
-    @IBOutlet weak var shownImage: UIImageView!
-    
+
+    @IBOutlet weak var backBtn: UIButton!
+    @IBOutlet weak var gradientView: UIView!
+    @IBOutlet weak var imageToEdit: UIImageView!
+    @IBOutlet var editOptionBtns: [UIButton]!
+    var image : UIImage?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.shownImage.image = capturedImages!.first
-        
-    }
-    
-    func createMultipartBody(parameters: [String: String], boundary: String) -> Data {
-        var body = ""
-        
-        for (key, value) in parameters {
-            body += "--\(boundary)\r\n"
-            body += "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n"
-            body += "\(value)\r\n"
+
+        if let image {
+            self.imageToEdit.image = image
         }
-        body += "--\(boundary)--\r\n"
-        
-        return body.data(using: .utf8) ?? Data()
     }
-    
-    @IBAction func enchanceWithAI(_ sender: Any) {
-         //Usage
-        let boundary = "---011000010111000001101001"
-        let headers = [
-            "x-rapidapi-key": "386d2ffa7fmsh367f0d53d8669d7p160d7cjsn13fd10cb406c",
-            "x-rapidapi-host": "picsart-remove-background2.p.rapidapi.com",
-            "Content-Type": "multipart/form-data; boundary=\(boundary)"
+
+    override func viewWillAppear(_ animated: Bool) {
+
+        // Create the gradient layer
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            UIColor(red: 0.38, green: 0.69, blue: 1, alpha: 1).cgColor,
+            UIColor(red: 0.525, green: 0.322, blue: 1, alpha: 1).cgColor
         ]
+        gradientLayer.locations = [0, 1]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0) // Start at the top center
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1) // End at the bottom center
 
-        let parameters = [
-            "image": self.shownImage.image,
-            "bg_image_url": "https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3JtMjctc2FzaS0wMi1sdXh1cnkuanBn.jpg",
-            "bg_blur": "10",
-            "format": "JPG"
-        ] as [String : Any]
-
-
-        let url = "https://picsart-remove-background2.p.rapidapi.com/removebg"
-        SVProgressHUD.show()
-        RemoteRequest.requestPostURL(url, headers: headers, params: parameters, success: { response in
-            print("Response: \(response)")
-            if let urlString = response as? String{
-                self.shownImage.downloaded(from: urlString, contentMode: .scaleAspectFit) { result in
-                    switch result {
-                    case .success(let image):
-                        print("Image downloaded successfully: \(image)")
-                        SVProgressHUD.dismiss()
-                    case .failure(let error):
-                        print("Failed to download image: \(error.localizedDescription)")
-                        SVProgressHUD.dismiss()
-                    }
-                }
-            }
-        }) { error in
-            print("Error: \(error)")
-            SVProgressHUD.dismiss()
+        // Add the gradient layer to the view
+        DispatchQueue.main.async {
+            self.gradientView.layer.insertSublayer(gradientLayer, at: 0)
+            gradientLayer.frame = self.gradientView.bounds
+            self.backBtn.layer.zPosition = 10
         }
     }
-    
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        // Update the gradient layer's frame to match the gradientView's bounds
+        if let gradientLayer = gradientView.layer.sublayers?.first as? CAGradientLayer {
+            gradientLayer.frame = gradientView.bounds
+        }
+    }
+
+
     @IBAction func backPressed(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
-    
-    @IBAction func resetPressed(_ sender: Any) {
-        self.shownImage.image = capturedImages!.first
+
+    @IBAction func editOptionTapped(_ sender: UIButton) {
+        for button in editOptionBtns {
+            button.isSelected = false
+        }
+
+        // Select the tapped button
+        sender.isSelected = true
     }
+    
 }

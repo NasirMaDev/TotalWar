@@ -33,7 +33,7 @@
 		226B8B6D2C034FE90051EA7D /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226B8B5B2C034FE90051EA7D /* Poppins-ExtraBoldItalic.ttf */; };
 		226B8B6E2C034FE90051EA7D /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226B8B5C2C034FE90051EA7D /* Poppins-Light.ttf */; };
 		22A3D66B2C0655DF00A16049 /* CurvedGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A3D66A2C0655DF00A16049 /* CurvedGradientView.swift */; };
-		22C006B42C04D95700F83F7D /* ImageEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C006B32C04D95700F83F7D /* ImageEditViewController.swift */; };
+		22C006B42C04D95700F83F7D /* ImageEnchanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C006B32C04D95700F83F7D /* ImageEnchanceViewController.swift */; };
 		22DA25192C03AE8B003FA4C2 /* ProductModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DA25182C03AE8B003FA4C2 /* ProductModel.swift */; };
 		22E7E5FF2C035F000059C944 /* Sora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 22E7E5FE2C035F000059C944 /* Sora-Regular.ttf */; };
 		32DBABB117D84D04DC5F9604 /* Pods_PanelDashBoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A60BE27136A9DC9691F04BD /* Pods_PanelDashBoard.framework */; };
@@ -47,6 +47,9 @@
 		64113CFC2C05E6D300E03A9E /* BarCodePopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64113CFB2C05E6D300E03A9E /* BarCodePopup.swift */; };
 		6414F7092C05FAB200F53E72 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6414F7082C05FAB200F53E72 /* ScanViewController.swift */; };
 		6414F70B2C05FBD300F53E72 /* barCodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6414F70A2C05FBD300F53E72 /* barCodeScanner.swift */; };
+		643BFB462C074079008E079A /* ImagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643BFB452C074079008E079A /* ImagesCell.swift */; };
+		643BFB482C0741D3008E079A /* ProductImagesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643BFB472C0741D3008E079A /* ProductImagesModel.swift */; };
+		64FA50902C07644E00370EF5 /* ImageEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64FA508F2C07644E00370EF5 /* ImageEditViewController.swift */; };
 		E7A89196273BB8DD00A7013D /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A89195273BB8DD00A7013D /* Extension.swift */; };
 		E7A8919A273BBA4E00A7013D /* Vision.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A89199273BBA4E00A7013D /* Vision.swift */; };
 		E7F4B262273A8D3900E4441F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F4B261273A8D3900E4441F /* AppDelegate.swift */; };
@@ -103,7 +106,7 @@
 		226B8B5B2C034FE90051EA7D /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		226B8B5C2C034FE90051EA7D /* Poppins-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Light.ttf"; sourceTree = "<group>"; };
 		22A3D66A2C0655DF00A16049 /* CurvedGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurvedGradientView.swift; sourceTree = "<group>"; };
-		22C006B32C04D95700F83F7D /* ImageEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditViewController.swift; sourceTree = "<group>"; };
+		22C006B32C04D95700F83F7D /* ImageEnchanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEnchanceViewController.swift; sourceTree = "<group>"; };
 		22DA25182C03AE8B003FA4C2 /* ProductModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductModel.swift; sourceTree = "<group>"; };
 		22E7E5FE2C035F000059C944 /* Sora-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Regular.ttf"; sourceTree = "<group>"; };
 		24C55F9442E160B5105ACBB8 /* Pods-PanelDashBoard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PanelDashBoard.debug.xcconfig"; path = "Target Support Files/Pods-PanelDashBoard/Pods-PanelDashBoard.debug.xcconfig"; sourceTree = "<group>"; };
@@ -118,6 +121,9 @@
 		64113CFB2C05E6D300E03A9E /* BarCodePopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarCodePopup.swift; sourceTree = "<group>"; };
 		6414F7082C05FAB200F53E72 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		6414F70A2C05FBD300F53E72 /* barCodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = barCodeScanner.swift; sourceTree = "<group>"; };
+		643BFB452C074079008E079A /* ImagesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesCell.swift; sourceTree = "<group>"; };
+		643BFB472C0741D3008E079A /* ProductImagesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesModel.swift; sourceTree = "<group>"; };
+		64FA508F2C07644E00370EF5 /* ImageEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditViewController.swift; sourceTree = "<group>"; };
 		8A60BE27136A9DC9691F04BD /* Pods_PanelDashBoard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PanelDashBoard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA9C02F7DA64AB6213451A58 /* Pods-PanelDashBoard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PanelDashBoard.release.xcconfig"; path = "Target Support Files/Pods-PanelDashBoard/Pods-PanelDashBoard.release.xcconfig"; sourceTree = "<group>"; };
 		E7A89195273BB8DD00A7013D /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
@@ -203,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				22DA25182C03AE8B003FA4C2 /* ProductModel.swift */,
+				643BFB472C0741D3008E079A /* ProductImagesModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -218,8 +225,9 @@
 				2248E1252C0354F700DAA931 /* LoginViewController.swift */,
 				221712332C03637000865858 /* MyTabBarController.swift */,
 				6403D7702C0492CE00C83E41 /* CameraViewControllerNew.swift */,
-				22C006B32C04D95700F83F7D /* ImageEditViewController.swift */,
+				22C006B32C04D95700F83F7D /* ImageEnchanceViewController.swift */,
 				6414F7082C05FAB200F53E72 /* ScanViewController.swift */,
+				64FA508F2C07644E00370EF5 /* ImageEditViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -229,6 +237,7 @@
 			children = (
 				E7F4B277273BA5CB00E4441F /* ImageCollectionViewCell.swift */,
 				5EA783662754A77700525D14 /* ShowProductCell.swift */,
+				643BFB452C074079008E079A /* ImagesCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -555,17 +564,20 @@
 				FD7802A227A095DD0084FB1F /* BarcodeScannerViewController.swift in Sources */,
 				5EC6A75627467ECD0010C744 /* ImageDataModel.xcdatamodeld in Sources */,
 				FD78029C27A095DD0084FB1F /* UIView+Extensions.swift in Sources */,
+				643BFB462C074079008E079A /* ImagesCell.swift in Sources */,
 				FD78029D27A095DD0084FB1F /* NSLayoutConstraint+Extensions.swift in Sources */,
 				FD78029927A095DD0084FB1F /* FocusViewType.swift in Sources */,
 				5EA7836B2754BEFF00525D14 /* Constant.swift in Sources */,
 				FD7802A327A095DD0084FB1F /* VideoPermissionService.swift in Sources */,
-				22C006B42C04D95700F83F7D /* ImageEditViewController.swift in Sources */,
+				22C006B42C04D95700F83F7D /* ImageEnchanceViewController.swift in Sources */,
 				221712322C03635100865858 /* CustomizedTabBar.swift in Sources */,
 				FD7802A027A095DD0084FB1F /* MessageViewController.swift in Sources */,
 				5E81ADCC274F9F0800D5720A /* WebServices.swift in Sources */,
 				5EA783652754A64C00525D14 /* ShowProductViewController.swift in Sources */,
 				FD7802A727A0AB6A0084FB1F /* SaveItemsViewController.swift in Sources */,
+				643BFB482C0741D3008E079A /* ProductImagesModel.swift in Sources */,
 				5EA783692754B87F00525D14 /* SettingViewController.swift in Sources */,
+				64FA50902C07644E00370EF5 /* ImageEditViewController.swift in Sources */,
 				22DA25192C03AE8B003FA4C2 /* ProductModel.swift in Sources */,
 				6414F7092C05FAB200F53E72 /* ScanViewController.swift in Sources */,
 				22A3D66B2C0655DF00A16049 /* CurvedGradientView.swift in Sources */,
