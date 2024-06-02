@@ -9,14 +9,17 @@
 import UIKit
 import AVFoundation
 
-class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate {
+class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     @IBOutlet weak var backBtn: UIButton!
     var captureSession: AVCaptureSession!
     var videoPreviewLayer: AVCaptureVideoPreviewLayer!
-    var photoOutput: AVCapturePhotoOutput!
+    var photoOutput: AVCaptureVideoDataOutput!
     var capturedImages: [UIImage] = []
+    var product : ProductToUpload?
     var takeMultiImage = false
+    let PosterizeFilter = CIFilter(name: "CIColorPosterize", parameters: ["inputLevels" : 5])
+    var captureImage: Bool = false
 
     let captureButton: UIButton = {
         let button = UIButton(type: .system)
@@ -44,6 +47,15 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
         imageView.layer.borderColor = UIColor.white.cgColor
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
+    }()
+    
+    let flashButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "bolt.fill"), for: .normal) // Use an appropriate icon for flash
+        button.tintColor = .white
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(toggleFlash), for: .touchUpInside)
+        return button
     }()
 
     override func viewDidLoad() {
@@ -93,8 +105,8 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
         
         do {
             let input = try AVCaptureDeviceInput(device: camera)
-            photoOutput = AVCapturePhotoOutput()
-
+            photoOutput = AVCaptureVideoDataOutput()
+            photoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
             if captureSession.canAddInput(input) && captureSession.canAddOutput(photoOutput) {
                 captureSession.addInput(input)
                 captureSession.addOutput(photoOutput)
@@ -114,16 +126,29 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.captureSession.startRunning()
             DispatchQueue.main.async {
-                self?.videoPreviewLayer.frame = (self?.view.bounds)! //?? CGRect.zero
-                self?.setupUI()
+                guard let strongSelf = self else { return }
+                strongSelf.setupVideoPreviewLayerFrame()
+                strongSelf.setupUI()
             }
         }
+    }
+
+    private func setupVideoPreviewLayerFrame() {
+        let sideLength = min(view.bounds.width, view.bounds.height)
+        let squareFrame = CGRect(
+            x: (view.bounds.width - sideLength) / 2,
+            y: (view.bounds.height - sideLength) / 2,
+            width: sideLength,
+            height: sideLength
+        )
+        videoPreviewLayer.frame = squareFrame
     }
     
     func setupUI() {
         view.addSubview(captureButton)
         view.addSubview(tickButton)
         view.addSubview(thumbnailImageView)
+        view.addSubview(flashButton)
 
         NSLayoutConstraint.activate([
             captureButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -133,12 +158,17 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
 
             tickButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
             tickButton.centerYAnchor.constraint(equalTo: captureButton.centerYAnchor),
+
             thumbnailImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             thumbnailImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             thumbnailImageView.widthAnchor.constraint(equalToConstant: 50),
-            thumbnailImageView.heightAnchor.constraint(equalToConstant: 50)
-        ])
+            thumbnailImageView.heightAnchor.constraint(equalToConstant: 50),
 
+            flashButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            flashButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            flashButton.widthAnchor.constraint(equalToConstant: 30),
+            flashButton.heightAnchor.constraint(equalToConstant: 30)
+        ])
 
         thumbnailImageView.isHidden = true
     }
@@ -170,15 +200,32 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
         }
 
     @objc func capturePhoto() {
-        let settings = AVCapturePhotoSettings()
-        photoOutput.capturePhoto(with: settings, delegate: self)
+        captureImage = true
         thumbnailImageView.isHidden = false
+    }
+    
+    @objc func toggleFlash() {
+        guard let device = AVCaptureDevice.default(for: .video), device.hasTorch else { return }
+        
+        do {
+            try device.lockForConfiguration()
+            if device.torchMode == .on {
+                device.torchMode = .off
+            } else {
+                try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+            }
+            device.unlockForConfiguration()
+        } catch {
+            print("Flash could not be used")
+        }
     }
 
     @objc func proceedToNextScreen() {
+        product?.images = self.capturedImages
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let imageEditVC = storyboard.instantiateViewController(withIdentifier: "ImageEnchanceViewController") as? ImageEnchanceViewController {
             imageEditVC.capturedImages = self.capturedImages
+            imageEditVC.product = self.product
             self.navigationController?.pushViewController(imageEditVC, animated: true)
         }
     }
@@ -188,14 +235,49 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate 
     }
 
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let imageData = photo.fileDataRepresentation() {
-            if let image = UIImage(data: imageData) {
-                capturedImages.append(image)
-                thumbnailImageView.image = image
-                if !takeMultiImage{
-                    proceedToNextScreen()
-                }
-            }
+        guard let imageData = photo.fileDataRepresentation(), let fullImage = UIImage(data: imageData) else {
+            return
         }
+        
+        let croppedImage = cropToSquare(image: fullImage)
+        capturedImages.append(croppedImage)
+        thumbnailImageView.image = croppedImage
+        if !takeMultiImage{
+            proceedToNextScreen()
+        }
+        
+    }
+    
+    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!)
+    {
+        guard let filter = PosterizeFilter else
+        {
+            return
+        }
+        
+        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+        let cameraImage = CIImage(cvPixelBuffer: pixelBuffer!)
+        
+        filter.setValue(cameraImage, forKey: kCIInputImageKey)
+        
+        let filteredImage = UIImage(ciImage: filter.value(forKey: kCIOutputImageKey) as! CIImage!)
+        debugPrint("Filter images")
+        if self.captureImage {
+            capturedImages.append(filteredImage)
+            thumbnailImageView.image = filteredImage
+        }
+    }
+    
+    private func cropToSquare(image: UIImage) -> UIImage {
+        let sideLength = min(image.size.width, image.size.height)
+        let xOffset = (image.size.width - sideLength) / 2
+        let yOffset = (image.size.height - sideLength) / 2
+        let cropRect = CGRect(x: xOffset, y: yOffset, width: sideLength, height: sideLength)
+        
+        guard let cgImage = image.cgImage?.cropping(to: cropRect) else {
+            return image
+        }
+        
+        return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
     }
 }

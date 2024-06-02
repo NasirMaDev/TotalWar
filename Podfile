@@ -13,5 +13,5 @@ target 'PanelDashBoard' do
     pod 'Alamofire' , '~> 4.7.3'
     pod 'SVProgressHUD'
     pod 'IQKeyboardManagerSwift'
-
+    
 end

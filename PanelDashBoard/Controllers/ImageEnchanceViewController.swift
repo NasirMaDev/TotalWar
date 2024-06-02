@@ -12,20 +12,22 @@ import Alamofire
 
 class ImageEnchanceViewController: UIViewController{
 
-    var capturedImages: [UIImage]?
+    var capturedImages = [UIImage.init(named: "test1"),UIImage.init(named: "jiuce")]
     @IBOutlet weak var imagesCV: UICollectionView!
     var imagesModel : [ProductImagesModel] = []
+    var product : ProductToUpload?
     @IBOutlet weak var imagesPager: UIPageControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let capturedImages = capturedImages {
+        //if let capturedImages = capturedImages {
             for (index, item) in capturedImages.enumerated() {
                 let isSelected = index == 0
-                imagesModel.append(ProductImagesModel(OgImage: item, enchanedImage: nil, selected: isSelected))
+                imagesModel.append(ProductImagesModel(OgImage: item!, enchanedImage: nil, selected: isSelected))
             }
-        }
+        //}
+        product = ProductToUpload(image: [], status: "", barcode: "", ismatchbarcode: true, barCodeURLPostFix: "")
         imagesCV.isPagingEnabled = true
         imagesCV.delegate = self
         imagesCV.dataSource = self
@@ -108,9 +110,28 @@ class ImageEnchanceViewController: UIViewController{
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let imageEditVC = storyboard.instantiateViewController(withIdentifier: "ImageEditViewController") as? ImageEditViewController {
             imageEditVC.image =  self.imagesModel[at].OgImage
+            imageEditVC.completionHandler = { editedImage in
+                self.imagesModel[at].enchanedImage = editedImage
+                self.imagesModel[at].showOriginal = false
+                self.imagesCV.reloadData()
+            }
             self.navigationController?.pushViewController(imageEditVC, animated: true)
         }
     }
+    
+    func getImages(from models: [ProductImagesModel]) -> [UIImage] {
+        return models.map { $0.enchanedImage ?? $0.OgImage }
+    }
+    
+    @IBAction func nextScreenPressed(_ sender: Any) {
+        product?.images = getImages(from: self.imagesModel)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let imageEditVC = storyboard.instantiateViewController(withIdentifier: "ProductDetailViewController") as? ProductDetailViewController {
+            imageEditVC.product = self.product
+            self.navigationController?.pushViewController(imageEditVC, animated: true)
+        }
+    }
+    
 }
 
 

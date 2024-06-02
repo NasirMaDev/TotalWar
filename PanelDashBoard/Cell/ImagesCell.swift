@@ -13,23 +13,25 @@ class ImagesCell: UICollectionViewCell {
     @IBOutlet weak var resetBtn: UIButton!
     @IBOutlet weak var itemImage: UIImageView!
     @IBOutlet weak var editBtn: UIButton!
-
+    
     var resetAction: (() -> Void)?
-        var editAction: (() -> Void)?
-
-        override func awakeFromNib() {
-            super.awakeFromNib()
-
+    var editAction: (() -> Void)?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        if (resetBtn != nil){
             resetBtn.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
             editBtn.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
         }
-
-        @objc private func resetButtonTapped() {
-            resetAction?()
-        }
-
-        @objc private func editButtonTapped() {
-            editAction?()
-        }
-
+    }
+    
+    @objc private func resetButtonTapped() {
+        resetAction?()
+    }
+    
+    @objc private func editButtonTapped() {
+        editAction?()
+    }
+    
 }

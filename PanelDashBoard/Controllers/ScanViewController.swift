@@ -205,11 +205,13 @@ class ScanViewController: UIViewController , CameraViewDelegate {
             popupView.removeFromSuperview()
         }
         let result = isBarCodePresentInArray(barCode: currentCode, IsBarCodeScan: true)
+        let product = ProductToUpload(image: [], status: "", barcode: currentCode, ismatchbarcode: result.0, barCodeURLPostFix: result.1)
         debugPrint(result)
         let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
         let vc : CameraViewControllerNew = storyboard.instantiateViewController(withIdentifier: "CameraViewControllerNew") as! CameraViewControllerNew
         vc.hidesBottomBarWhenPushed = true
         vc.takeMultiImage = true
+        vc.product = product
         navigationController?.pushViewController(vc, animated: true)
     }
 

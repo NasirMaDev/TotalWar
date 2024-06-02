@@ -12,7 +12,10 @@
 		221712362C0371E300865858 /* Sora-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 221712352C0371E300865858 /* Sora-ExtraLight.ttf */; };
 		221712382C03722300865858 /* Sora-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 221712372C03722300865858 /* Sora-SemiBold.ttf */; };
 		22354CD22C0344900013D15B /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22354CD12C0344900013D15B /* Configs.swift */; };
+		22392ECE2C0C7DB2007CE61B /* ProductImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22392ECD2C0C7DB2007CE61B /* ProductImageManager.swift */; };
+		22392ED02C0C974A007CE61B /* ReviewProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22392ECF2C0C974A007CE61B /* ReviewProductsViewController.swift */; };
 		2248E1262C0354F700DAA931 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2248E1252C0354F700DAA931 /* LoginViewController.swift */; };
+		22501B822C08E5CC006660D9 /* ProductDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22501B812C08E5CC006660D9 /* ProductDetailViewController.swift */; };
 		226B8B4A2C034EED0051EA7D /* Sora-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226B8B492C034EED0051EA7D /* Sora-Bold.ttf */; };
 		226B8B5D2C034FE90051EA7D /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226B8B4B2C034FE80051EA7D /* Poppins-Thin.ttf */; };
 		226B8B5E2C034FE90051EA7D /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 226B8B4C2C034FE80051EA7D /* Poppins-BoldItalic.ttf */; };
@@ -85,7 +88,10 @@
 		221712372C03722300865858 /* Sora-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-SemiBold.ttf"; sourceTree = "<group>"; };
 		22354CD02C03440D0013D15B /* ReleaseConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ReleaseConfig.xcconfig; sourceTree = "<group>"; };
 		22354CD12C0344900013D15B /* Configs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
+		22392ECD2C0C7DB2007CE61B /* ProductImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageManager.swift; sourceTree = "<group>"; };
+		22392ECF2C0C974A007CE61B /* ReviewProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewProductsViewController.swift; sourceTree = "<group>"; };
 		2248E1252C0354F700DAA931 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		22501B812C08E5CC006660D9 /* ProductDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailViewController.swift; sourceTree = "<group>"; };
 		226B8B492C034EED0051EA7D /* Sora-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Bold.ttf"; sourceTree = "<group>"; };
 		226B8B4B2C034FE80051EA7D /* Poppins-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		226B8B4C2C034FE80051EA7D /* Poppins-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -210,6 +216,7 @@
 			children = (
 				22DA25182C03AE8B003FA4C2 /* ProductModel.swift */,
 				643BFB472C0741D3008E079A /* ProductImagesModel.swift */,
+				22392ECD2C0C7DB2007CE61B /* ProductImageManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -228,6 +235,8 @@
 				22C006B32C04D95700F83F7D /* ImageEnchanceViewController.swift */,
 				6414F7082C05FAB200F53E72 /* ScanViewController.swift */,
 				64FA508F2C07644E00370EF5 /* ImageEditViewController.swift */,
+				22501B812C08E5CC006660D9 /* ProductDetailViewController.swift */,
+				22392ECF2C0C974A007CE61B /* ReviewProductsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -411,6 +420,8 @@
 			dependencies = (
 			);
 			name = PanelDashBoard;
+			packageProductDependencies = (
+			);
 			productName = PanelDashBoard;
 			productReference = E7F4B25E273A8D3900E4441F /* PanelDashBoard.app */;
 			productType = "com.apple.product-type.application";
@@ -447,6 +458,8 @@
 				"pl-PL",
 			);
 			mainGroup = E7F4B255273A8D3900E4441F;
+			packageReferences = (
+			);
 			productRefGroup = E7F4B25F273A8D3900E4441F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -558,11 +571,13 @@
 				E7A89196273BB8DD00A7013D /* Extension.swift in Sources */,
 				E7F4B274273A9D1E00E4441F /* AddProductsViewController.swift in Sources */,
 				FD78029E27A095DD0084FB1F /* AVMetadataObject+Extensions.swift in Sources */,
+				22392ECE2C0C7DB2007CE61B /* ProductImageManager.swift in Sources */,
 				22354CD22C0344900013D15B /* Configs.swift in Sources */,
 				FD78029F27A095DD0084FB1F /* CameraViewController.swift in Sources */,
 				E7F4B262273A8D3900E4441F /* AppDelegate.swift in Sources */,
 				FD7802A227A095DD0084FB1F /* BarcodeScannerViewController.swift in Sources */,
 				5EC6A75627467ECD0010C744 /* ImageDataModel.xcdatamodeld in Sources */,
+				22501B822C08E5CC006660D9 /* ProductDetailViewController.swift in Sources */,
 				FD78029C27A095DD0084FB1F /* UIView+Extensions.swift in Sources */,
 				643BFB462C074079008E079A /* ImagesCell.swift in Sources */,
 				FD78029D27A095DD0084FB1F /* NSLayoutConstraint+Extensions.swift in Sources */,
@@ -580,6 +595,7 @@
 				64FA50902C07644E00370EF5 /* ImageEditViewController.swift in Sources */,
 				22DA25192C03AE8B003FA4C2 /* ProductModel.swift in Sources */,
 				6414F7092C05FAB200F53E72 /* ScanViewController.swift in Sources */,
+				22392ED02C0C974A007CE61B /* ReviewProductsViewController.swift in Sources */,
 				22A3D66B2C0655DF00A16049 /* CurvedGradientView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -749,7 +765,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = HFZW53KPR6;
+				DEVELOPMENT_TEAM = X874GAZABK;
 				INFOPLIST_FILE = PanelDashBoard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TopWarGame;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -758,7 +774,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.total-wargame.panel123";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.total-wargame.panel321";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -777,7 +793,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = HFZW53KPR6;
+				DEVELOPMENT_TEAM = X874GAZABK;
 				INFOPLIST_FILE = PanelDashBoard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TopWarGame;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -786,7 +802,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.total-wargame.panel123";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.total-wargame.panel321";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

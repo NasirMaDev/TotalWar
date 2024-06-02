@@ -13,4 +13,20 @@ class ShowProductCell: UICollectionViewCell {
     @IBOutlet weak var imgBarCode:UIImageView!
     @IBOutlet weak var productName: UILabel!
     @IBOutlet weak var productPrice: UILabel!
+    @IBOutlet weak var deletebtn: UIButton!
+    
+    var deleteAction: (() -> Void)?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        if (deletebtn != nil){
+            deletebtn.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+        }
+    }
+    
+    @objc private func deleteButtonTapped() {
+        deleteAction?()
+    }
+    
 }
