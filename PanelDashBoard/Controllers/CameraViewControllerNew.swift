@@ -20,6 +20,9 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     var takeMultiImage = false
     let PosterizeFilter = CIFilter(name: "CIColorPosterize", parameters: ["inputLevels" : 5])
     var captureImage: Bool = false
+    var ciContext: CIContext!
+    var filter: CIFilter!
+    var filteredImageView: UIImageView!
 
     let captureButton: UIButton = {
         let button = UIButton(type: .system)
@@ -48,7 +51,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    
+
     let flashButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "bolt.fill"), for: .normal) // Use an appropriate icon for flash
@@ -68,8 +71,8 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     }
 
     deinit {
-            removeObservers()
-        }
+        removeObservers()
+    }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -77,22 +80,22 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     }
 
     func addObservers() {
-          NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: captureSession)
-          NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: captureSession)
-          NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: captureSession)
-      }
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: captureSession)
+    }
 
-      func removeObservers() {
-          NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: captureSession)
-          NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: captureSession)
-          NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: captureSession)
-      }
+    func removeObservers() {
+        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: captureSession)
+        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: captureSession)
+        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: captureSession)
+    }
 
     private func setupCamera() {
         captureSession = AVCaptureSession()
         captureSession.sessionPreset = .photo
         var camera: AVCaptureDevice?
-        
+
         if let backCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
             camera = backCamera
             print("Back camera accessed")
@@ -100,9 +103,9 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             camera = frontCamera
             print("Back camera is not available, accessing front camera")
         }
-        
-        guard let camera else {return}
-        
+
+        guard let camera else { return }
+
         do {
             let input = try AVCaptureDeviceInput(device: camera)
             photoOutput = AVCaptureVideoDataOutput()
@@ -112,17 +115,25 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
                 captureSession.addOutput(photoOutput)
                 setupLivePreview()
             }
-        } catch let error  {
+        } catch let error {
             print("Error Unable to initialize back camera:  \(error.localizedDescription)")
         }
     }
-    
+
     func setupLivePreview() {
         videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         videoPreviewLayer.videoGravity = .resizeAspectFill
         videoPreviewLayer.connection?.videoOrientation = .portrait
         view.layer.addSublayer(videoPreviewLayer)
-        
+
+        filteredImageView = UIImageView(frame: view.bounds)
+        filteredImageView.contentMode = .scaleAspectFill
+        view.addSubview(filteredImageView)
+
+        ciContext = CIContext()
+        filter = CIFilter(name: "CISepiaTone")
+        filter.setValue(0.8, forKey: kCIInputIntensityKey)
+
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.captureSession.startRunning()
             DispatchQueue.main.async {
@@ -142,8 +153,57 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             height: sideLength
         )
         videoPreviewLayer.frame = squareFrame
+        filteredImageView.frame = squareFrame
     }
-    
+
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        var ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+
+        // Correct the orientation of the CIImage
+        let orientation = connection.videoOrientation
+        let transform = CGAffineTransform(rotationAngle: angleForVideoOrientation(orientation))
+        ciImage = ciImage.transformed(by: transform)
+
+        // Apply the filter
+        filter.setValue(ciImage, forKey: kCIInputImageKey)
+
+        guard let outputImage = filter.outputImage,
+              let cgImage = ciContext.createCGImage(outputImage, from: outputImage.extent) else { return }
+
+        let filteredUIImage = UIImage(cgImage: cgImage)
+        DispatchQueue.main.async { [weak self] in
+            self?.filteredImageView.image = filteredUIImage
+
+        }
+
+        if captureImage {
+            self.capturedImages.append(filteredUIImage)
+            captureImage = false
+            DispatchQueue.main.async { [weak self] in
+                self?.thumbnailImageView.image = filteredUIImage
+            }
+            if !takeMultiImage{
+                proceedToNextScreen()
+            }
+        }
+    }
+
+    private func angleForVideoOrientation(_ orientation: AVCaptureVideoOrientation) -> CGFloat {
+        switch orientation {
+        case .portrait:
+            return 0
+        case .portraitUpsideDown:
+            return .pi
+        case .landscapeRight:
+            return -.pi / 2
+        case .landscapeLeft:
+            return .pi / 2
+        @unknown default:
+            return 0
+        }
+    }
+
     func setupUI() {
         view.addSubview(captureButton)
         view.addSubview(tickButton)
@@ -174,39 +234,72 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     }
 
     @objc func sessionRuntimeError(notification: NSNotification) {
-            guard let errorValue = notification.userInfo?[AVCaptureSessionErrorKey] as? NSError else { return }
-            let error = AVError(_nsError: errorValue)
-            print("Capture session runtime error: \(error.localizedDescription)")
+        guard let errorValue = notification.userInfo?[AVCaptureSessionErrorKey] as? NSError else { return }
+        let error = AVError(_nsError: errorValue)
+        print("Capture session runtime error: \(error.localizedDescription)")
 
-            // If the media services were reset, stop and restart the session
-            if error.code == .mediaServicesWereReset {
-                captureSession?.startRunning()
-            } else {
-                // Handle other errors
+        // If the media services were reset, stop and restart the session
+        if error.code == .mediaServicesWereReset {
+            captureSession?.startRunning()
+        } else {
+            // Handle other errors
+        }
+    }
+
+    @objc func sessionWasInterrupted(notification: NSNotification) {
+        print("Capture session was interrupted")
+
+        guard let userInfo = notification.userInfo,
+              let reasonValue = userInfo[AVCaptureSessionInterruptionReasonKey] as? NSNumber,
+              let reason = AVCaptureSession.InterruptionReason(rawValue: reasonValue.intValue) else {
+            return
+        }
+
+        switch reason {
+        case .videoDeviceNotAvailableWithMultipleForegroundApps:
+            // Video device is not available with multiple foreground apps
+            print("Video device is not available with multiple foreground apps")
+
+        case .videoDeviceInUseByAnotherClient:
+            // Video device is in use by another client
+            print("Video device is in use by another client")
+
+        case .audioDeviceInUseByAnotherClient:
+            // Audio device is in use by another client
+            print("Audio device is in use by another client")
+
+        case .videoDeviceNotAvailableDueToSystemPressure:
+            // Video device is not available due to system pressure
+            print("Video device is not available due to system pressure")
+
+        @unknown default:
+            print("Capture session was interrupted for an unknown reason")
+        }
+
+        // Restart the session after a delay to give time for the interruption to resolve
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            if !self.captureSession.isRunning {
+                DispatchQueue.global(qos: .background).async { [weak self] in
+                    self?.captureSession.startRunning()
+                }
             }
         }
+    }
 
-        @objc func sessionWasInterrupted(notification: NSNotification) {
-            print("Capture session was interrupted")
-            // Handle interruption, e.g., show UI message
-            DispatchQueue.global(qos: .background).async { [weak self] in
-                self?.captureSession.startRunning()
-            }
-        }
-
-        @objc func sessionInterruptionEnded(notification: NSNotification) {
-            print("Capture session interruption ended")
-            // Handle end of interruption, e.g., restart session if needed
-        }
+    @objc func sessionInterruptionEnded(notification: NSNotification) {
+        print("Capture session interruption ended")
+        // Handle end of interruption, e.g., restart session if needed
+    }
 
     @objc func capturePhoto() {
         captureImage = true
         thumbnailImageView.isHidden = false
     }
-    
+
     @objc func toggleFlash() {
         guard let device = AVCaptureDevice.default(for: .video), device.hasTorch else { return }
-        
+
         do {
             try device.lockForConfiguration()
             if device.torchMode == .on {
@@ -234,50 +327,50 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         self.navigationController?.popViewController(animated: true)
     }
 
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        guard let imageData = photo.fileDataRepresentation(), let fullImage = UIImage(data: imageData) else {
-            return
-        }
-        
-        let croppedImage = cropToSquare(image: fullImage)
-        capturedImages.append(croppedImage)
-        thumbnailImageView.image = croppedImage
-        if !takeMultiImage{
-            proceedToNextScreen()
-        }
-        
-    }
-    
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!)
-    {
-        guard let filter = PosterizeFilter else
-        {
-            return
-        }
-        
-        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-        let cameraImage = CIImage(cvPixelBuffer: pixelBuffer!)
-        
-        filter.setValue(cameraImage, forKey: kCIInputImageKey)
-        
-        let filteredImage = UIImage(ciImage: filter.value(forKey: kCIOutputImageKey) as! CIImage!)
-        debugPrint("Filter images")
-        if self.captureImage {
-            capturedImages.append(filteredImage)
-            thumbnailImageView.image = filteredImage
-        }
-    }
-    
+//    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+//        guard let imageData = photo.fileDataRepresentation(), let fullImage = UIImage(data: imageData) else {
+//            return
+//        }
+//
+//        let croppedImage = cropToSquare(image: fullImage)
+//        capturedImages.append(croppedImage)
+//        thumbnailImageView.image = croppedImage
+//        if !takeMultiImage{
+//            proceedToNextScreen()
+//        }
+//
+//    }
+//
+//    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!)
+//    {
+//        guard let filter = PosterizeFilter else
+//        {
+//            return
+//        }
+//
+//        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+//        let cameraImage = CIImage(cvPixelBuffer: pixelBuffer!)
+//
+//        filter.setValue(cameraImage, forKey: kCIInputImageKey)
+//
+//        let filteredImage = UIImage(ciImage: filter.value(forKey: kCIOutputImageKey) as! CIImage!)
+//        debugPrint("Filter images")
+//        if self.captureImage {
+//            capturedImages.append(filteredImage)
+//            thumbnailImageView.image = filteredImage
+//        }
+//    }
+
     private func cropToSquare(image: UIImage) -> UIImage {
         let sideLength = min(image.size.width, image.size.height)
         let xOffset = (image.size.width - sideLength) / 2
         let yOffset = (image.size.height - sideLength) / 2
         let cropRect = CGRect(x: xOffset, y: yOffset, width: sideLength, height: sideLength)
-        
+
         guard let cgImage = image.cgImage?.cropping(to: cropRect) else {
             return image
         }
-        
+
         return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
     }
 }

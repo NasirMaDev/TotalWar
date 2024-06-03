@@ -83,6 +83,7 @@ class ScanViewController: UIViewController , CameraViewDelegate {
 
     func didFindCode(code: String) {
         self.currentCode = code
+        self.previewView.stopScanner()
         showAlert(title: "BarCode Scan Successfully", message: "Code: \(code)", hasBarCode: true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.previewView.resetScanner()
@@ -90,6 +91,7 @@ class ScanViewController: UIViewController , CameraViewDelegate {
     }
 
     func didFailToFindCode() {
+        self.previewView.stopScanner()
         showAlert(title: "Scan Failed", message: "No barcode found.", hasBarCode: false)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.previewView.resetScanner()

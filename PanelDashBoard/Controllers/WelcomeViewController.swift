@@ -30,8 +30,8 @@ class WelcomeViewController: UIViewController {
         manageProductView.addGestureRecognizer(tapGesture)
 
         let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(ScanCode))
-        scanCodeView.isUserInteractionEnabled = true
-        scanCodeView.addGestureRecognizer(tapGesture2)
+        uploadProductView.isUserInteractionEnabled = true
+        uploadProductView.addGestureRecognizer(tapGesture2)
 
         let tapGesture3 = UITapGestureRecognizer(target: self, action: #selector(enchancePressed))
         enhanceView.isUserInteractionEnabled = true

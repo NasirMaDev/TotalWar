@@ -44,7 +44,7 @@ extension ReviewProductsViewController:UICollectionViewDelegate,UICollectionView
         let cell:ShowProductCell = collectionView.dequeueReusableCell(withReuseIdentifier: "ShowProductCell", for: indexPath as IndexPath) as! ShowProductCell
         let product = self.allProducts[indexPath.row]
         cell.imgBarCode.image = product.images.first!
-        cell.productName.text = "product \(indexPath.row)"
+        cell.productName.text = product.barcode
         cell.deleteAction = { [weak self] in
             self?.deletBtnTapped(at: indexPath.row)
         }
