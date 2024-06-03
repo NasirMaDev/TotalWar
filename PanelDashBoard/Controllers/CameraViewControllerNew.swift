@@ -18,11 +18,21 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     var capturedImages: [UIImage] = []
     var product : ProductToUpload?
     var takeMultiImage = false
-    let PosterizeFilter = CIFilter(name: "CIColorPosterize", parameters: ["inputLevels" : 5])
+    var currentFilter : CIFilter? = nil
     var captureImage: Bool = false
     var ciContext: CIContext!
     var filter: CIFilter!
     var filteredImageView: UIImageView!
+    let filters: [CIFilter?] = [
+        nil,
+        CIFilter(name: "CIPhotoEffectChrome")!,
+        CIFilter(name: "CIPhotoEffectFade")!,
+        CIFilter(name: "CIPhotoEffectInstant")!,
+        CIFilter(name: "CIPhotoEffectNoir")!,
+        CIFilter(name: "CIPhotoEffectProcess")!,
+        CIFilter(name: "CIPhotoEffectTonal")!,
+        CIFilter(name: "CIPhotoEffectTransfer")!
+    ]
 
     let captureButton: UIButton = {
         let button = UIButton(type: .system)
@@ -61,6 +71,16 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         return button
     }()
 
+    let filtersCollectionView: UICollectionView = {
+           let layout = UICollectionViewFlowLayout()
+           layout.scrollDirection = .horizontal
+           layout.minimumInteritemSpacing = 10
+           let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+           collectionView.translatesAutoresizingMaskIntoConstraints = false
+           collectionView.backgroundColor = .clear
+           return collectionView
+       }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -68,6 +88,10 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         setupCamera()
         addObservers()
         backBtn.layer.zPosition = 10
+
+        filtersCollectionView.delegate = self
+        filtersCollectionView.dataSource = self
+        filtersCollectionView.register(FilterCell.self, forCellWithReuseIdentifier: "FilterCell")
     }
 
     deinit {
@@ -165,26 +189,46 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         let transform = CGAffineTransform(rotationAngle: angleForVideoOrientation(orientation))
         ciImage = ciImage.transformed(by: transform)
 
-        // Apply the filter
-        filter.setValue(ciImage, forKey: kCIInputImageKey)
+        // Apply the filter if currentFilter is not nil
+        if let currentFilter = currentFilter {
+            currentFilter.setValue(ciImage, forKey: kCIInputImageKey)
 
-        guard let outputImage = filter.outputImage,
-              let cgImage = ciContext.createCGImage(outputImage, from: outputImage.extent) else { return }
+            guard let outputImage = currentFilter.outputImage,
+                  let cgImage = ciContext.createCGImage(outputImage, from: outputImage.extent) else { return }
 
-        let filteredUIImage = UIImage(cgImage: cgImage)
-        DispatchQueue.main.async { [weak self] in
-            self?.filteredImageView.image = filteredUIImage
-
-        }
-
-        if captureImage {
-            self.capturedImages.append(filteredUIImage)
-            captureImage = false
+            let filteredUIImage = UIImage(cgImage: cgImage)
             DispatchQueue.main.async { [weak self] in
-                self?.thumbnailImageView.image = filteredUIImage
+                self?.filteredImageView.image = filteredUIImage
             }
-            if !takeMultiImage{
-                proceedToNextScreen()
+
+            if captureImage {
+                self.capturedImages.append(filteredUIImage)
+                captureImage = false
+                DispatchQueue.main.async { [weak self] in
+                    self?.thumbnailImageView.image = filteredUIImage
+                }
+                if !takeMultiImage {
+                    proceedToNextScreen()
+                }
+            }
+        } else {
+            // No filter applied, just convert the CIImage to UIImage
+            guard let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent) else { return }
+
+            let filteredUIImage = UIImage(cgImage: cgImage)
+            DispatchQueue.main.async { [weak self] in
+                self?.filteredImageView.image = filteredUIImage
+            }
+
+            if captureImage {
+                self.capturedImages.append(filteredUIImage)
+                captureImage = false
+                DispatchQueue.main.async { [weak self] in
+                    self?.thumbnailImageView.image = filteredUIImage
+                }
+                if !takeMultiImage {
+                    proceedToNextScreen()
+                }
             }
         }
     }
@@ -209,6 +253,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         view.addSubview(tickButton)
         view.addSubview(thumbnailImageView)
         view.addSubview(flashButton)
+        view.addSubview(filtersCollectionView)
 
         NSLayoutConstraint.activate([
             captureButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -227,7 +272,12 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             flashButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             flashButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             flashButton.widthAnchor.constraint(equalToConstant: 30),
-            flashButton.heightAnchor.constraint(equalToConstant: 30)
+            flashButton.heightAnchor.constraint(equalToConstant: 30),
+
+            filtersCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            filtersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            filtersCollectionView.bottomAnchor.constraint(equalTo: captureButton.topAnchor, constant: -20),
+            filtersCollectionView.heightAnchor.constraint(equalToConstant: 100)
         ])
 
         thumbnailImageView.isHidden = true
@@ -289,7 +339,11 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
 
     @objc func sessionInterruptionEnded(notification: NSNotification) {
         print("Capture session interruption ended")
-        // Handle end of interruption, e.g., restart session if needed
+        if !self.captureSession.isRunning {
+            DispatchQueue.global(qos: .background).async { [weak self] in
+                self?.captureSession.startRunning()
+            }
+        }
     }
 
     @objc func capturePhoto() {
@@ -327,40 +381,6 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         self.navigationController?.popViewController(animated: true)
     }
 
-//    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-//        guard let imageData = photo.fileDataRepresentation(), let fullImage = UIImage(data: imageData) else {
-//            return
-//        }
-//
-//        let croppedImage = cropToSquare(image: fullImage)
-//        capturedImages.append(croppedImage)
-//        thumbnailImageView.image = croppedImage
-//        if !takeMultiImage{
-//            proceedToNextScreen()
-//        }
-//
-//    }
-//
-//    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!)
-//    {
-//        guard let filter = PosterizeFilter else
-//        {
-//            return
-//        }
-//
-//        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-//        let cameraImage = CIImage(cvPixelBuffer: pixelBuffer!)
-//
-//        filter.setValue(cameraImage, forKey: kCIInputImageKey)
-//
-//        let filteredImage = UIImage(ciImage: filter.value(forKey: kCIOutputImageKey) as! CIImage!)
-//        debugPrint("Filter images")
-//        if self.captureImage {
-//            capturedImages.append(filteredImage)
-//            thumbnailImageView.image = filteredImage
-//        }
-//    }
-
     private func cropToSquare(image: UIImage) -> UIImage {
         let sideLength = min(image.size.width, image.size.height)
         let xOffset = (image.size.width - sideLength) / 2
@@ -372,5 +392,100 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         }
 
         return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
+    }
+}
+
+
+extension CameraViewControllerNew : UICollectionViewDelegate,UICollectionViewDataSource{
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return filters.count // Number of filters
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FilterCell", for: indexPath) as! FilterCell
+        cell.configure(with: filters[indexPath.row]?.name ?? "None", image: UIImage.init(named: "test1"))// Configure the cell with filter name
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row == 0{
+            self.currentFilter = nil
+        }else{
+            self.currentFilter = filters[indexPath.row]
+            debugPrint("\(filters[indexPath.row]) pressed")
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 80, height: 80) // Size of each filter cell
+    }
+}
+
+
+// FilterCell class
+class FilterCell: UICollectionViewCell {
+    private let filterImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    private let filterLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        label.textColor = .white
+        label.backgroundColor = .clear
+        label.clipsToBounds = true
+        label.font = .systemFont(ofSize: 8)
+        label.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        return label
+    }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        contentView.addSubview(filterImageView)
+        contentView.addSubview(filterLabel)
+
+        // StackView to arrange the image and label vertically
+        let stackView = UIStackView(arrangedSubviews: [filterImageView, filterLabel])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.spacing = 8
+        contentView.addSubview(stackView)
+
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func configure(with filterName: String, image: UIImage?) {
+        filterLabel.text = filterName.replacingOccurrences(of: "CI", with: "").replacingOccurrences(of: "PhotoEffect", with: "")
+        filterImageView.image = applyFilter(to: image ?? UIImage(), filterName: filterName)
+    }
+
+    func applyFilter(to image: UIImage, filterName: String) -> UIImage {
+        guard let ciImage = CIImage(image: image) else { return image }
+
+        let filter = CIFilter(name: filterName)
+        filter?.setValue(ciImage, forKey: kCIInputImageKey)
+
+        guard let outputCIImage = filter?.outputImage else { return image }
+
+        let context = CIContext(options: nil)
+        guard let outputCGImage = context.createCGImage(outputCIImage, from: outputCIImage.extent) else { return image }
+
+        return UIImage(cgImage: outputCGImage)
     }
 }

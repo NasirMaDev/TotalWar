@@ -26,6 +26,7 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.GetAllProducts()
+        self.setupToHideKeyboardOnTapOnView()
     }
     
     override func viewWillAppear(_ animated: Bool) {

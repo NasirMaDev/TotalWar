@@ -12,11 +12,15 @@ class ProductImageManager {
     static let shared = ProductImageManager()
 
     private init() {}
-    
+
     private var productImages: [ProductToUpload] = []
 
-    // Add a product image
+    // Add a product image if it's not a duplicate
     func addProductImage(_ productImage: ProductToUpload) {
+        // Check if the product image already exists
+        guard !productImages.contains(where: { $0.images == productImage.images }) else {
+            return
+        }
         productImages.append(productImage)
         saveToUserDefaults()
     }

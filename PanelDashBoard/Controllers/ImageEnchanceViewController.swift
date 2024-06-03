@@ -59,7 +59,7 @@ class ImageEnchanceViewController: UIViewController{
          //Usage
         let boundary = "---011000010111000001101001"
         let headers = [
-            "x-rapidapi-key": "386d2ffa7fmsh367f0d53d8669d7p160d7cjsn13fd10cb406c",
+            "x-rapidapi-key": "4f13651bb1msh2895d8696ad5e3cp14b5efjsn1913a6695fd2",
             "x-rapidapi-host": "picsart-remove-background2.p.rapidapi.com",
             "Content-Type": "multipart/form-data; boundary=\(boundary)"
         ]
@@ -83,6 +83,7 @@ class ImageEnchanceViewController: UIViewController{
                     case .success(let image):
                         print("Image downloaded successfully: \(image)")
                         self.imagesModel[self.imagesPager.currentPage].enchanedImage = image
+                        self.imagesModel[self.imagesPager.currentPage].showOriginal = false
                         self.imagesCV.reloadData()
                         SVProgressHUD.dismiss()
                     case .failure(let error):
