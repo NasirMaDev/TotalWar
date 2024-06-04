@@ -78,6 +78,8 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
            collectionView.translatesAutoresizingMaskIntoConstraints = false
            collectionView.backgroundColor = .clear
+           collectionView.showsHorizontalScrollIndicator = false
+           collectionView.showsVerticalScrollIndicator = false
            return collectionView
        }()
 
@@ -205,10 +207,11 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
                 self.capturedImages.append(filteredUIImage)
                 captureImage = false
                 DispatchQueue.main.async { [weak self] in
-                    self?.thumbnailImageView.image = filteredUIImage
-                }
-                if !takeMultiImage {
-                    proceedToNextScreen()
+                    guard let self else {return}
+                    self.thumbnailImageView.image = filteredUIImage
+                    if !self.takeMultiImage {
+                        self.proceedToNextScreen()
+                    }
                 }
             }
         } else {
@@ -224,10 +227,11 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
                 self.capturedImages.append(filteredUIImage)
                 captureImage = false
                 DispatchQueue.main.async { [weak self] in
-                    self?.thumbnailImageView.image = filteredUIImage
-                }
-                if !takeMultiImage {
-                    proceedToNextScreen()
+                    guard let self else {return}
+                    self.thumbnailImageView.image = filteredUIImage
+                    if !self.takeMultiImage {
+                        self.proceedToNextScreen()
+                    }
                 }
             }
         }
@@ -368,11 +372,15 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     }
 
     @objc func proceedToNextScreen() {
+        if capturedImages.isEmpty{
+            return
+        }
         product?.images = self.capturedImages
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let imageEditVC = storyboard.instantiateViewController(withIdentifier: "ImageEnchanceViewController") as? ImageEnchanceViewController {
             imageEditVC.capturedImages = self.capturedImages
             imageEditVC.product = self.product
+            imageEditVC.showNextBtn = self.takeMultiImage
             self.navigationController?.pushViewController(imageEditVC, animated: true)
         }
     }

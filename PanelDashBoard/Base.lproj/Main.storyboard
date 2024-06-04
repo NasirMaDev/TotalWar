@@ -930,10 +930,10 @@
                                 </connections>
                             </searchBar>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="SEm-y1-Mvx">
-                                <rect key="frame" x="30" y="236" width="236" height="40"/>
+                                <rect key="frame" x="30" y="236" width="103" height="40"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sJB-WN-HAu">
-                                        <rect key="frame" x="0.0" y="0.0" width="113" height="40"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sJB-WN-HAu">
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="40"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
@@ -951,7 +951,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xOI-UM-EHz">
-                                        <rect key="frame" x="133" y="0.0" width="103" height="40"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="103" height="40"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
@@ -1907,7 +1907,6 @@
                                 <state key="normal" image="backIcon"/>
                                 <connections>
                                     <action selector="backPressed:" destination="TaK-XR-8b2" eventType="touchUpInside" id="hhd-NQ-f8O"/>
-                                    <action selector="backPressed:" destination="bDk-me-hAo" eventType="touchUpInside" id="jGn-Aq-jM9"/>
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bottomDesign" translatesAutoresizingMaskIntoConstraints="NO" id="CLy-Wk-lNV">
@@ -1953,7 +1952,6 @@
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="nextScreen"/>
                                 <connections>
-                                    <action selector="backPressed:" destination="bDk-me-hAo" eventType="touchUpInside" id="DN4-iQ-3sm"/>
                                     <action selector="nextScreenPressed:" destination="TaK-XR-8b2" eventType="touchUpInside" id="nb5-9g-Z50"/>
                                 </connections>
                             </button>
@@ -2070,6 +2068,7 @@
                     <connections>
                         <outlet property="imagesCV" destination="pfw-3c-vb5" id="Oex-rW-DmB"/>
                         <outlet property="imagesPager" destination="ONT-JG-oHY" id="ExP-aJ-aoZ"/>
+                        <outlet property="nextBtn" destination="GVo-0X-I40" id="kju-Iq-2L4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5QV-iB-Cu0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

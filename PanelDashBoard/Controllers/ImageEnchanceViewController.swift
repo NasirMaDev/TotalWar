@@ -12,11 +12,15 @@ import Alamofire
 
 class ImageEnchanceViewController: UIViewController{
 
-    var capturedImages = [UIImage.init(named: "test1"),UIImage.init(named: "jiuce")]
+
     @IBOutlet weak var imagesCV: UICollectionView!
+    @IBOutlet weak var imagesPager: UIPageControl!
+    @IBOutlet weak var nextBtn: UIButton!
+    
     var imagesModel : [ProductImagesModel] = []
     var product : ProductToUpload?
-    @IBOutlet weak var imagesPager: UIPageControl!
+    var showNextBtn = true
+    var capturedImages : [UIImage] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,16 +28,15 @@ class ImageEnchanceViewController: UIViewController{
         //if let capturedImages = capturedImages {
             for (index, item) in capturedImages.enumerated() {
                 let isSelected = index == 0
-                imagesModel.append(ProductImagesModel(OgImage: item!, enchanedImage: nil, selected: isSelected))
+                imagesModel.append(ProductImagesModel(OgImage: item, enchanedImage: nil, selected: isSelected))
             }
         //}
-        product = ProductToUpload(image: [], status: "", barcode: "", ismatchbarcode: true, barCodeURLPostFix: "")
         imagesCV.isPagingEnabled = true
         imagesCV.delegate = self
         imagesCV.dataSource = self
-       // imagesCV.minimumLineSpacing = 0
         imagesPager.numberOfPages = imagesModel.count
         imagesPager.currentPage = 0
+        nextBtn.isHidden = !showNextBtn
     }
 
 
