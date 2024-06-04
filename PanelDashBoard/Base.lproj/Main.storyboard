@@ -930,7 +930,7 @@
                                 </connections>
                             </searchBar>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="SEm-y1-Mvx">
-                                <rect key="frame" x="30" y="236" width="103" height="40"/>
+                                <rect key="frame" x="30" y="236" width="220" height="40"/>
                                 <subviews>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sJB-WN-HAu">
                                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="40"/>
@@ -966,6 +966,24 @@
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="showScanner:" destination="bDk-me-hAo" eventType="touchUpInside" id="imt-Sd-GGb"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4RA-qW-1r8">
+                                        <rect key="frame" x="123" y="0.0" width="97" height="40"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Save  Items">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="showSaveditems:" destination="bDk-me-hAo" eventType="touchUpInside" id="Vi8-Fn-hN5"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -1079,6 +1097,7 @@
                     </view>
                     <connections>
                         <outlet property="ShowProductCollectionView" destination="G6a-7A-Kbb" id="UcV-E6-a96"/>
+                        <outlet property="saveItemBtn" destination="4RA-qW-1r8" id="aBI-KI-kHI"/>
                         <outlet property="searchBar" destination="WaS-di-HYt" id="Lb7-Q3-KY4"/>
                     </connections>
                 </viewController>

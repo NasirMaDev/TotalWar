@@ -19,6 +19,8 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
     
     @IBOutlet weak var ShowProductCollectionView:UICollectionView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var saveItemBtn: UIButton!
+    
     var timer: Timer?
     var AllProducts = [Product]()
     var filteredData = [Product]()
@@ -152,6 +154,12 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
         let vc : AddProductsViewController = storyboard.instantiateViewController(withIdentifier: "AddProductsViewController") as! AddProductsViewController
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    @IBAction func showSaveditems(_ sender: Any) {
+        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let vc : SaveItemsViewController = storyboard.instantiateViewController(withIdentifier: "SaveItemsViewController") as! SaveItemsViewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 extension ShowProductViewController:UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{
@@ -197,7 +205,7 @@ extension ShowProductViewController: BarcodeScannerCodeDelegate {
         appDelegate?.scannedItems.append(code)
         let unique = appDelegate?.scannedItems.uniqued()
         appDelegate?.scannedItems = unique ?? []
-        //manageSaveItemButton()
+        self.saveItemBtn.isHidden = false
     }
 }
 
@@ -210,6 +218,6 @@ extension ShowProductViewController: BarcodeScannerErrorDelegate {
 extension ShowProductViewController: BarcodeScannerDismissalDelegate {
     func scannerDidDismiss(_ controller: BarcodeScannerViewController) {
         controller.dismiss(animated: true, completion: nil)
-       //manageSaveItemButton()
+        self.saveItemBtn.isHidden = false
     }
 }
