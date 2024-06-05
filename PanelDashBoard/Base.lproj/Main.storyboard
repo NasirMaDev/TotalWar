@@ -610,6 +610,7 @@
                             <constraint firstItem="BhL-UO-vQK" firstAttribute="trailing" secondItem="cN8-X2-5th" secondAttribute="trailing" constant="15" id="zPJ-Uq-VxD"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="" image="settings" id="O1j-sz-nZd"/>
                     <connections>
                         <outlet property="txtAccessKeyAWS" destination="gCw-mK-Qf9" id="sAq-2G-cfA"/>
                         <outlet property="txtBarCodePrefix" destination="Eti-rG-ttn" id="oZS-oH-6IG"/>
@@ -625,7 +626,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7cq-Ud-tgt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1928.8" y="-799.2503748125938"/>
+            <point key="canvasLocation" x="-1607" y="2023"/>
         </scene>
         <!--Add Products View Controller-->
         <scene sceneID="G3q-ej-TWw">
@@ -1133,7 +1134,7 @@
                     <connections>
                         <segue destination="fqd-mI-9Fp" kind="relationship" relationship="viewControllers" id="F5U-zV-nnn"/>
                         <segue destination="avo-WJ-Zwd" kind="relationship" relationship="viewControllers" id="SBL-zX-paY"/>
-                        <segue destination="Xc0-Ea-kwZ" kind="relationship" relationship="viewControllers" id="RgS-pT-5JW"/>
+                        <segue destination="tEd-XN-JKg" kind="relationship" relationship="viewControllers" id="r1f-rR-mjd"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iOH-R8-HLh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1726,7 +1727,7 @@
                                 <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="16"/>
                                 <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="8"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="Login" backgroundImage="btnBg">
+                                <state key="normal" title="Login" backgroundImage="btnBgNew">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -2038,7 +2039,7 @@
                                 <rect key="frame" x="129.66666666666666" y="441" width="116" height="26"/>
                             </pageControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cxT-aC-Qx7">
-                                <rect key="frame" x="60" y="572.66666666666663" width="255" height="97"/>
+                                <rect key="frame" x="60.333333333333329" y="572.66666666666663" width="254.66666666666669" height="97"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="16"/>
                                 <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="8"/>
@@ -2666,6 +2667,7 @@ Vestibulum vehicula justo ac magna consequat, non fermentum eros tempor.</string
         <image name="bottomDesign" width="205" height="142"/>
         <image name="brightIcon" width="39.666667938232422" height="37"/>
         <image name="btnBg" width="254.66667175292969" height="97"/>
+        <image name="btnBgNew" width="254.66667175292969" height="97"/>
         <image name="camera.viewfinder" catalog="system" width="128" height="115"/>
         <image name="carbon_home" width="32.666667938232422" height="28"/>
         <image name="chevron.backward" catalog="system" width="97" height="128"/>
