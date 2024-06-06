@@ -102,7 +102,7 @@ class ScanViewController: UIViewController , CameraViewDelegate {
         let checkmarkImage = UIImage(systemName: hasBarCode ? "checkmark.circle.fill" : "cross.circle.fill")?.withTintColor(.purple, renderingMode: .alwaysOriginal)
 
         let button1 = UIButton(type: .system)
-        button1.setTitle(hasBarCode ? "Next" : "Retry", for: .normal)
+        button1.setTitle(hasBarCode ? "OK" : "Retry", for: .normal)
         button1.backgroundColor = UIColor.systemBlue
         button1.tintColor = .white
         button1.layer.cornerRadius = 15
@@ -212,13 +212,13 @@ class ScanViewController: UIViewController , CameraViewDelegate {
         }
         let result = isBarCodePresentInArray(barCode: currentCode, IsBarCodeScan: true)
         if isBarcodePresent(currentCode: currentCode) || result.0 == true{
-            showAlert(title: "BarCode Already Present in product list", message: "Code: \(currentCode)", hasBarCode: true)
+            showAlert(title: "BarCode Already Present", message: "Code: \(currentCode)", hasBarCode: true)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.previewView.resetScanner()
             }
             return
         }
-        let product = ProductToUpload(image: [], status: "", barcode: currentCode, ismatchbarcode: result.0, barCodeURLPostFix: result.1)
+        let product = ProductToUpload(image: [], status: "Scanned", barcode: currentCode, ismatchbarcode: result.0, barCodeURLPostFix: result.1)
         debugPrint(result)
         let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
         let vc : CameraViewControllerNew = storyboard.instantiateViewController(withIdentifier: "CameraViewControllerNew") as! CameraViewControllerNew

@@ -75,7 +75,29 @@ extension ProductDetailViewController:UICollectionViewDelegate,UICollectionViewD
         cell.itemImage.image = image
         cell.deleteAction = {
             self.product?.images.remove(at: indexPath.row)
+            
+            if self.product?.images.count == 0{
+                let alertController = UIAlertController(title: "Error", message: "All product images deleted", preferredStyle: .alert)
+                let alertbutton = UIAlertAction(title: "OK", style: .cancel, handler:{(action: UIAlertAction!) in
+                    ProductImageManager.shared.removeAllProducts()
+                    //self.navigationController?.popViewController(animated: true)
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let mainTabBarController = storyboard.instantiateViewController(identifier: "CustomTabBarController") as! MyTabBarController
+                    mainTabBarController.selectedIndex = 1
+                    // Set the tab bar controller as the root view controller
+                    UIApplication.shared.windows.first?.rootViewController = mainTabBarController
+                    UIApplication.shared.windows.first?.makeKeyAndVisible()
+                   
+                } )
+                alertController.addAction(alertbutton)
+                self.present(alertController, animated: true, completion: nil)
+                return
+            }
+            
+            let image = self.product?.images[self.selectedIndex]
+            self.selectedImage.image = image
             self.imageCV.reloadData()
+            
         }
         return cell
     }

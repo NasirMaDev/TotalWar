@@ -21,6 +21,7 @@ class ImageEditViewController: UIViewController {
     var currentBrightness = 50.0
     var currentExposure = 50.0
     var currentSaturation = 50.0
+    var currentAngle = 0.0
     var filter: CIFilter? = CIFilter(name: "CIColorControls")
     
     var completionHandler: ((UIImage) -> Void)?
@@ -72,6 +73,9 @@ class ImageEditViewController: UIViewController {
         for button in editOptionBtns {
             button.isSelected = false
         }
+        
+        optionSlider.minimumValue = 0
+        optionSlider.maximumValue = 100
 
         // Select the tapped button
         sender.isSelected = true
@@ -88,6 +92,12 @@ class ImageEditViewController: UIViewController {
             optionLabel.text = "Saturation"
             sliderValue.text = "\(currentSaturation)%"
             optionSlider.value = Float(currentSaturation)
+        case 4:
+            optionLabel.text = "Angle"
+            sliderValue.text = "\(currentAngle)°"
+            optionSlider.value = Float(currentAngle)
+//            optionSlider.minimumValue = 0
+//            optionSlider.maximumValue = 360
         default:
             optionLabel.text = ""
         }
@@ -106,35 +116,44 @@ class ImageEditViewController: UIViewController {
         } else if optionLabel.text == "Saturation" {
             sliderValue.text = "\(sender.value)%"
             currentSaturation = Double(Int(sender.value))
+        }else if optionLabel.text == "Angle"{
+            sliderValue.text = "\(sender.value)°"
+            currentAngle = Double(Int(sender.value))
         }
+        
         imageToEdit.image = self.applyImageFilter(for: image)
     }
     
     @IBAction func savePressed(_ sender: Any) {
-        completionHandler?(image!)
+        completionHandler?(self.imageToEdit.image!)
         self.navigationController?.popViewController(animated: true)
     }
     
     
     func applyImageFilter(for image: UIImage) -> UIImage? {
         guard let sourceImage = CIImage(image: image) else { return nil }
-        
-        let brightnessValue = (currentBrightness - 50) / 50
-        let exposureValue = (currentExposure - 50) / 50
-        let saturationValue = currentSaturation / 50
-        
+
+        let brightnessValue = (currentBrightness - 50) / 50.0
+        let exposureValue = (currentExposure - 50) / 50.0
+        let saturationValue = currentSaturation / 50.0
+
         let brightnessFilter = CIFilter(name: "CIColorControls")
         brightnessFilter?.setValue(sourceImage, forKey: kCIInputImageKey)
         brightnessFilter?.setValue(brightnessValue, forKey: kCIInputBrightnessKey)
         brightnessFilter?.setValue(saturationValue, forKey: kCIInputSaturationKey)
-        
+
         let exposureFilter = CIFilter(name: "CIExposureAdjust")
         exposureFilter?.setValue(brightnessFilter?.outputImage, forKey: kCIInputImageKey)
         exposureFilter?.setValue(exposureValue, forKey: kCIInputEVKey)
-        
+
         guard let output = exposureFilter?.outputImage else { return nil }
-        
-        return UIImage(ciImage: output, scale: image.scale, orientation: image.imageOrientation)
+
+        // Convert currentAngle (0 to 100) to radians (0 to 2π)
+        let radians = Float(currentAngle) * (2 * .pi) / 100.0
+
+        let outputImage = UIImage(ciImage: output, scale: image.scale, orientation: image.imageOrientation)
+
+        return outputImage.rotate(radians: radians)
     }
 
 }

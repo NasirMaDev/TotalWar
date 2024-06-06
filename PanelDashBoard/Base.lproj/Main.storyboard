@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="MJd-WT-nIr">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="MJd-WT-nIr">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -1997,6 +1997,17 @@
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Mpw-n6-8Oi">
                                                     <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                            <color key="value" systemColor="systemGray2Color"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                            <real key="value" value="5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VBE-Ol-W69">
                                                     <rect key="frame" x="20" y="20" width="40" height="40"/>
@@ -2148,10 +2159,10 @@
                                 <rect key="frame" x="0.0" y="162.33333333333337" width="375" height="325"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="s83-6d-nKs">
-                                <rect key="frame" x="56.333333333333343" y="517.33333333333337" width="262.33333333333326" height="67.333333333333371"/>
+                                <rect key="frame" x="18.666666666666657" y="517.33333333333337" width="337.66666666666674" height="61.666666666666629"/>
                                 <subviews>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ibx-jG-vdW">
-                                        <rect key="frame" x="0.0" y="0.0" width="67.333333333333329" height="67.333333333333329"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="62" height="61.666666666666664"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Ibx-jG-vdW" secondAttribute="height" multiplier="1:1" id="W6M-h5-ZQd"/>
                                         </constraints>
@@ -2164,7 +2175,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LRs-1X-lDP">
-                                        <rect key="frame" x="97.333333333333314" y="0.0" width="67.666666666666686" height="67.333333333333329"/>
+                                        <rect key="frame" x="92" y="0.0" width="62" height="61.666666666666664"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="LRs-1X-lDP" secondAttribute="height" multiplier="1:1" id="rzM-RT-SLt"/>
                                         </constraints>
@@ -2177,7 +2188,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wdd-eY-I4n">
-                                        <rect key="frame" x="195" y="0.0" width="67.333333333333314" height="67.333333333333329"/>
+                                        <rect key="frame" x="184" y="0.0" width="61.666666666666657" height="61.666666666666664"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="wdd-eY-I4n" secondAttribute="height" multiplier="1:1" id="uXq-4Y-UDO"/>
                                         </constraints>
@@ -2189,23 +2200,39 @@
                                             <action selector="editOptionTapped:" destination="c8v-JC-oe9" eventType="touchUpInside" id="JDJ-TM-7MZ"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vNv-jH-LfS">
+                                        <rect key="frame" x="275.66666666666663" y="0.0" width="62" height="61.666666666666664"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="vNv-jH-LfS" secondAttribute="height" multiplier="1:1" id="gHt-0N-nCD"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="angle" catalog="system" backgroundImage="unSelectedCircle"/>
+                                        <state key="selected" image="angle" catalog="system" backgroundImage="selectedCircle"/>
+                                        <connections>
+                                            <action selector="editOptionTapped:" destination="c8v-JC-oe9" eventType="touchUpInside" id="cH4-V5-QSV"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="vNv-jH-LfS" firstAttribute="width" secondItem="vNv-jH-LfS" secondAttribute="height" multiplier="1:1" id="aXF-dr-PZZ"/>
+                                </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brightness" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cU8-s3-Mc4">
-                                <rect key="frame" x="56.333333333333336" y="614.66666666666663" width="94.666666666666657" height="21.666666666666629"/>
+                                <rect key="frame" x="18.666666666666664" y="609" width="94.666666666666686" height="21.666666666666629"/>
                                 <fontDescription key="fontDescription" name="Sora-SemiBold" family="Sora" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="50" minValue="0.0" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="lwP-Md-sgw">
-                                <rect key="frame" x="67.333333333333329" y="636.33333333333337" width="240.33333333333337" height="31"/>
+                                <rect key="frame" x="50.666666666666657" y="630.66666666666663" width="274" height="31"/>
                                 <color key="tintColor" red="0.49411764740000003" green="0.35294118520000001" blue="0.96470588450000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <connections>
                                     <action selector="sliderValueChanged:" destination="c8v-JC-oe9" eventType="valueChanged" id="wb8-Ed-Oe6"/>
                                 </connections>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0%" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yGY-z3-mZe">
-                                <rect key="frame" x="315.66666666666669" y="642" width="24.666666666666686" height="19"/>
+                                <rect key="frame" x="332.66666666666669" y="636.33333333333337" width="24.666666666666686" height="19"/>
                                 <fontDescription key="fontDescription" name="Sora-SemiBold" family="Sora" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -2230,7 +2257,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="jaj-c8-gPJ" firstAttribute="centerY" secondItem="3YO-HI-hrr" secondAttribute="centerY" multiplier="1.75" id="1zM-h5-dEg"/>
-                            <constraint firstItem="lwP-Md-sgw" firstAttribute="width" secondItem="s83-6d-nKs" secondAttribute="width" multiplier="0.9" id="6BN-UV-nCJ"/>
+                            <constraint firstItem="lwP-Md-sgw" firstAttribute="width" secondItem="s83-6d-nKs" secondAttribute="width" multiplier="0.8" id="6BN-UV-nCJ"/>
                             <constraint firstItem="emp-aO-jbE" firstAttribute="leading" secondItem="3YO-HI-hrr" secondAttribute="leading" id="8Tv-AD-aM2"/>
                             <constraint firstItem="yGY-z3-mZe" firstAttribute="centerY" secondItem="lwP-Md-sgw" secondAttribute="centerY" id="Cl7-wn-TZa"/>
                             <constraint firstItem="i2Y-qc-fMJ" firstAttribute="top" secondItem="ExD-Xm-3CW" secondAttribute="bottom" id="Crc-c8-AAI"/>
@@ -2251,7 +2278,7 @@
                             <constraint firstItem="cU8-s3-Mc4" firstAttribute="top" secondItem="s83-6d-nKs" secondAttribute="bottom" constant="30" id="rNi-mz-ceM"/>
                             <constraint firstItem="emp-aO-jbE" firstAttribute="height" secondItem="wTV-b4-1bZ" secondAttribute="height" multiplier="0.2" id="sWS-5f-iNZ"/>
                             <constraint firstItem="yGY-z3-mZe" firstAttribute="leading" secondItem="lwP-Md-sgw" secondAttribute="trailing" constant="10" id="swD-Sd-bBL"/>
-                            <constraint firstItem="s83-6d-nKs" firstAttribute="width" secondItem="wTV-b4-1bZ" secondAttribute="width" multiplier="0.7" id="tSx-Vw-3CN"/>
+                            <constraint firstItem="s83-6d-nKs" firstAttribute="width" secondItem="wTV-b4-1bZ" secondAttribute="width" multiplier="0.9" id="tSx-Vw-3CN"/>
                             <constraint firstItem="ExD-Xm-3CW" firstAttribute="centerX" secondItem="wTV-b4-1bZ" secondAttribute="centerX" id="uoi-Fe-9f3"/>
                             <constraint firstItem="Ka0-S2-dpH" firstAttribute="leading" secondItem="3YO-HI-hrr" secondAttribute="leading" id="vdD-MP-y79"/>
                             <constraint firstItem="i2Y-qc-fMJ" firstAttribute="centerX" secondItem="wTV-b4-1bZ" secondAttribute="centerX" id="xdg-sA-qje"/>
@@ -2267,6 +2294,7 @@
                         <outletCollection property="editOptionBtns" destination="Ibx-jG-vdW" collectionClass="NSMutableArray" id="UFR-d4-Nqg"/>
                         <outletCollection property="editOptionBtns" destination="LRs-1X-lDP" collectionClass="NSMutableArray" id="EQN-Ih-OKw"/>
                         <outletCollection property="editOptionBtns" destination="wdd-eY-I4n" collectionClass="NSMutableArray" id="HXk-mW-C0J"/>
+                        <outletCollection property="editOptionBtns" destination="vNv-jH-LfS" collectionClass="NSMutableArray" id="a6g-ug-0Ti"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BYU-S2-ilk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -2685,6 +2713,7 @@ Vestibulum vehicula justo ac magna consequat, non fermentum eros tempor.</string
         <image name=" nameIcon" width="152" height="46"/>
         <image name="FilterIcon" width="40" height="37"/>
         <image name="addicon" width="50" height="50"/>
+        <image name="angle" catalog="system" width="128" height="90"/>
         <image name="arrow.clockwise" catalog="system" width="113" height="128"/>
         <image name="backIcon" width="34" height="34"/>
         <image name="bin.xmark" catalog="system" width="128" height="92"/>
