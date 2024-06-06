@@ -31,6 +31,11 @@ class ProductImageManager {
         saveToUserDefaults()
     }
 
+    func removeAllProducts() {
+        productImages.removeAll()
+        saveToUserDefaults()
+    }
+
     // Get all product images
     func getProducts() -> [ProductToUpload] {
         return productImages

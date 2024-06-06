@@ -197,7 +197,11 @@ class ScanViewController: UIViewController , CameraViewDelegate {
         return (false,"")
     }
 
-
+    func isBarcodePresent(currentCode: String) -> Bool {
+        return ProductImageManager.shared.getProducts().contains(where: { product in
+            product.barcode == currentCode
+        })
+    }
 
     
     @objc func nextAction() {
@@ -207,6 +211,13 @@ class ScanViewController: UIViewController , CameraViewDelegate {
             popupView.removeFromSuperview()
         }
         let result = isBarCodePresentInArray(barCode: currentCode, IsBarCodeScan: true)
+        if isBarcodePresent(currentCode: currentCode) || result.0 == true{
+            showAlert(title: "BarCode Already Present in product list", message: "Code: \(currentCode)", hasBarCode: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.previewView.resetScanner()
+            }
+            return
+        }
         let product = ProductToUpload(image: [], status: "", barcode: currentCode, ismatchbarcode: result.0, barCodeURLPostFix: result.1)
         debugPrint(result)
         let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)

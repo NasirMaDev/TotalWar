@@ -27,10 +27,13 @@ class ReviewProductsViewController: UIViewController {
     }
     
     @IBAction func uploadPressed(_ sender: Any) {
-        
+        ProductImageManager.shared.removeAllProducts()
     }
     
-
+    @IBAction func backPressed(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
 }
 
 extension ReviewProductsViewController:UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{

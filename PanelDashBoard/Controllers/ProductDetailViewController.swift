@@ -73,7 +73,10 @@ extension ProductDetailViewController:UICollectionViewDelegate,UICollectionViewD
         let cell = (self.imageCV.dequeueReusableCell(withReuseIdentifier: "ImagesCell", for: indexPath) as? ImagesCell)!
         let image = self.product?.images[indexPath.row]
         cell.itemImage.image = image
-
+        cell.deleteAction = {
+            self.product?.images.remove(at: indexPath.row)
+            self.imageCV.reloadData()
+        }
         return cell
     }
 
