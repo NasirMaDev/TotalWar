@@ -212,10 +212,16 @@ class ScanViewController: UIViewController , CameraViewDelegate {
         }
         let result = isBarCodePresentInArray(barCode: currentCode, IsBarCodeScan: true)
         if isBarcodePresent(currentCode: currentCode) || result.0 == true{
-            showAlert(title: "BarCode Already Present", message: "Code: \(currentCode)", hasBarCode: true)
+            let alertController = UIAlertController(title: "Alert", message: "BarCode already present", preferredStyle: .alert)
+            let alertbutton = UIAlertAction(title: "OK", style: .cancel, handler:{(action: UIAlertAction!) in
+                self.dismiss(animated: true, completion: nil)
+            } )
+            alertController.addAction(alertbutton)
+            self.present(alertController, animated: true, completion: nil)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.previewView.resetScanner()
             }
+            currentCode = ""
             return
         }
         let product = ProductToUpload(image: [], status: "Scanned", barcode: currentCode, ismatchbarcode: result.0, barCodeURLPostFix: result.1)

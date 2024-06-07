@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func getAllValues(){
         
         if(UserDefaults.standard.value(forKey: "SheetName") == nil){
-            UserDefaults.standard.set("1ta_VfXHa2ngV4jjfNTTV76w_bp5VTslusr_TPOzP", forKey: "SheetID")
+            UserDefaults.standard.set(Constant.SheetID, forKey: "SheetID")
             UserDefaults.standard.set("Sheet1", forKey: "SheetName")
             UserDefaults.standard.set("A2", forKey: "StartingColumn")
             UserDefaults.standard.set("AM100", forKey: "EndingColumn")
@@ -44,7 +44,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.standard.set(Config.accessKeyAWS, forKey: "AccessKeyAWS")
             UserDefaults.standard.set(Constant.BaseURL, forKey: "BaseURL")
             UserDefaults.standard.set("K1JT27KREG7M44965ME3YYCWL3QBGEYW", forKey: "PrestaAPIKey")
-
         }
         
     }

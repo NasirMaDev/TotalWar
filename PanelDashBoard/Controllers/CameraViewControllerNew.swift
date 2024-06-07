@@ -72,16 +72,16 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     }()
 
     let filtersCollectionView: UICollectionView = {
-           let layout = UICollectionViewFlowLayout()
-           layout.scrollDirection = .horizontal
-           layout.minimumInteritemSpacing = 10
-           let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-           collectionView.translatesAutoresizingMaskIntoConstraints = false
-           collectionView.backgroundColor = .clear
-           collectionView.showsHorizontalScrollIndicator = false
-           collectionView.showsVerticalScrollIndicator = false
-           return collectionView
-       }()
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        return collectionView
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -375,6 +375,17 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         if capturedImages.isEmpty{
             return
         }
+        for item in self.capturedImages{
+            saveImageToGallery(image: item) { success, error in
+                if success {
+                    print("Image saved successfully.")
+                } else {
+                    if let error = error {
+                        print("Error saving image: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
         product?.images = self.capturedImages
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let imageEditVC = storyboard.instantiateViewController(withIdentifier: "ImageEnchanceViewController") as? ImageEnchanceViewController {
@@ -382,6 +393,19 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             imageEditVC.product = self.product
             imageEditVC.showNextBtn = self.takeMultiImage
             self.navigationController?.pushViewController(imageEditVC, animated: true)
+        }
+    }
+
+    func saveImageToGallery(image: UIImage, completion: @escaping (Bool, Error?) -> Void) {
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+
+    // Completion handler for saving the image
+    @objc private func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            print("Error saving image: \(error.localizedDescription)")
+        } else {
+            print("Image saved successfully")
         }
     }
 
