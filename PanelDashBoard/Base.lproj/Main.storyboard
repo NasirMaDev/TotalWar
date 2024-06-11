@@ -1933,7 +1933,7 @@
                                 <rect key="frame" x="0.0" y="670" width="205" height="142"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MtO-2m-Kiu">
-                                <rect key="frame" x="87.666666666666686" y="57.666666666666671" width="200" height="38.666666666666671"/>
+                                <rect key="frame" x="87.666666666666671" y="58" width="199.66666666666663" height="38.333333333333343"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Product">
                                         <attributes>
@@ -1967,7 +1967,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GVo-0X-I40">
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GVo-0X-I40">
                                 <rect key="frame" x="305" y="698" width="50" height="50"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="nextScreen"/>
@@ -2047,10 +2047,10 @@
                                 </cells>
                             </collectionView>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="ONT-JG-oHY">
-                                <rect key="frame" x="129.66666666666666" y="441" width="116" height="26"/>
+                                <rect key="frame" x="129.66666666666666" y="441.33333333333331" width="115.66666666666666" height="25.666666666666686"/>
                             </pageControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cxT-aC-Qx7">
-                                <rect key="frame" x="60.333333333333329" y="572.66666666666663" width="254.66666666666669" height="97"/>
+                                <rect key="frame" x="60.333333333333329" y="551.66666666666663" width="254.66666666666669" height="97"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="16"/>
                                 <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="8"/>
@@ -2060,9 +2060,39 @@
                                 </state>
                                 <connections>
                                     <action selector="enchanceWithAI:" destination="TaK-XR-8b2" eventType="touchUpInside" id="MwG-3r-su8"/>
-                                    <action selector="loginPressed:" destination="ZDf-li-JA9" eventType="touchUpInside" id="5HO-I8-FLI"/>
                                 </connections>
                             </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="0nu-k0-RAS">
+                                <rect key="frame" x="20" y="648.66666666666663" width="335" height="97"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Fy-xV-KjG">
+                                        <rect key="frame" x="0.0" y="0.0" width="167.66666666666666" height="97"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="14"/>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="8"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="6"/>
+                                        <state key="normal" title="Add new Product" backgroundImage="btnBg">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="addProductPressed:" destination="TaK-XR-8b2" eventType="touchUpInside" id="lXM-OM-Cl2"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GTs-tk-I9o">
+                                        <rect key="frame" x="167.66666666666663" y="0.0" width="167.33333333333337" height="97"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="14"/>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="8"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="6"/>
+                                        <state key="normal" title="Submit" backgroundImage="btnBg">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="submitPressed:" destination="TaK-XR-8b2" eventType="touchUpInside" id="2rE-S6-Mhf"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Xcg-Qj-zKq"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -2073,19 +2103,22 @@
                             <constraint firstItem="785-QD-fHN" firstAttribute="centerY" secondItem="hHE-E7-zOA" secondAttribute="centerY" id="E2e-Ro-GOx"/>
                             <constraint firstItem="ONT-JG-oHY" firstAttribute="centerX" secondItem="MCz-hP-dmA" secondAttribute="centerX" id="Ftr-Z7-B8R"/>
                             <constraint firstItem="t5a-Uw-qhC" firstAttribute="centerX" secondItem="MCz-hP-dmA" secondAttribute="centerX" id="GBo-5g-2OF"/>
-                            <constraint firstItem="cxT-aC-Qx7" firstAttribute="centerY" secondItem="Xcg-Qj-zKq" secondAttribute="centerY" multiplier="1.5" id="Hqh-Tv-D4a"/>
+                            <constraint firstItem="cxT-aC-Qx7" firstAttribute="centerY" secondItem="Xcg-Qj-zKq" secondAttribute="centerY" multiplier="1.45" id="Hqh-Tv-D4a"/>
                             <constraint firstItem="hHE-E7-zOA" firstAttribute="top" secondItem="MCz-hP-dmA" secondAttribute="top" id="IZz-iD-Edy"/>
                             <constraint firstItem="Faz-hy-IZ0" firstAttribute="top" secondItem="Xcg-Qj-zKq" secondAttribute="top" constant="10" id="JUM-lJ-fIr"/>
                             <constraint firstItem="785-QD-fHN" firstAttribute="trailing" secondItem="hHE-E7-zOA" secondAttribute="trailing" id="KkM-TD-LF3"/>
                             <constraint firstItem="785-QD-fHN" firstAttribute="firstBaseline" secondItem="hHE-E7-zOA" secondAttribute="firstBaseline" id="KlK-yd-0dX"/>
                             <constraint firstItem="t5a-Uw-qhC" firstAttribute="top" secondItem="MtO-2m-Kiu" secondAttribute="bottom" id="L1y-4c-6og"/>
+                            <constraint firstItem="0nu-k0-RAS" firstAttribute="leading" secondItem="Xcg-Qj-zKq" secondAttribute="leading" constant="20" id="Ljx-zf-OgG"/>
                             <constraint firstItem="Xcg-Qj-zKq" firstAttribute="trailing" secondItem="pfw-3c-vb5" secondAttribute="trailing" constant="30" id="MY9-1D-xc8"/>
                             <constraint firstItem="Faz-hy-IZ0" firstAttribute="leading" secondItem="Xcg-Qj-zKq" secondAttribute="leading" constant="30" id="Mtc-uW-4dZ"/>
                             <constraint firstItem="785-QD-fHN" firstAttribute="top" secondItem="hHE-E7-zOA" secondAttribute="top" id="NJ0-m5-kPI"/>
+                            <constraint firstAttribute="trailing" secondItem="0nu-k0-RAS" secondAttribute="trailing" constant="20" id="O9u-g3-d4j"/>
                             <constraint firstAttribute="trailing" secondItem="hHE-E7-zOA" secondAttribute="trailing" id="Oxe-tY-rXF"/>
                             <constraint firstItem="Xcg-Qj-zKq" firstAttribute="bottom" secondItem="GVo-0X-I40" secondAttribute="bottom" constant="30" id="RHD-di-4Qi"/>
                             <constraint firstItem="pfw-3c-vb5" firstAttribute="top" secondItem="785-QD-fHN" secondAttribute="bottom" constant="10" id="efk-mA-ZjC"/>
                             <constraint firstItem="cxT-aC-Qx7" firstAttribute="centerX" secondItem="MCz-hP-dmA" secondAttribute="centerX" id="gx6-ol-Djp"/>
+                            <constraint firstItem="0nu-k0-RAS" firstAttribute="top" secondItem="cxT-aC-Qx7" secondAttribute="bottom" id="kFe-Kg-tX8"/>
                             <constraint firstItem="MtO-2m-Kiu" firstAttribute="centerY" secondItem="Faz-hy-IZ0" secondAttribute="centerY" id="mki-OT-dC2"/>
                             <constraint firstItem="pfw-3c-vb5" firstAttribute="leading" secondItem="Xcg-Qj-zKq" secondAttribute="leading" constant="30" id="pca-ZG-ybS"/>
                             <constraint firstItem="785-QD-fHN" firstAttribute="leading" secondItem="hHE-E7-zOA" secondAttribute="leading" id="pfD-1K-h6W"/>
@@ -2135,7 +2168,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ExD-Xm-3CW">
-                                <rect key="frame" x="72.333333333333329" y="58" width="230.66666666666669" height="38.333333333333343"/>
+                                <rect key="frame" x="68" y="58" width="239" height="38.333333333333343"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Image">
                                         <attributes>

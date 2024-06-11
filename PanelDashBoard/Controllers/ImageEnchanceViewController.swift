@@ -36,7 +36,7 @@ class ImageEnchanceViewController: UIViewController{
         imagesCV.dataSource = self
         imagesPager.numberOfPages = imagesModel.count
         imagesPager.currentPage = 0
-        nextBtn.isHidden = !showNextBtn
+        //nextBtn.isHidden = !showNextBtn
     }
 
 
@@ -134,6 +134,28 @@ class ImageEnchanceViewController: UIViewController{
             imageEditVC.product = self.product
             self.navigationController?.pushViewController(imageEditVC, animated: true)
         }
+    }
+
+    @IBAction func addProductPressed(_ sender: Any) {
+        if let product{
+            ProductImageManager.shared.addProductImage(product)
+        }
+
+        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let vc : ScanViewController = storyboard.instantiateViewController(withIdentifier: "ScanViewController") as! ScanViewController
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @IBAction func submitPressed(_ sender: Any) {
+        if let product{
+            ProductImageManager.shared.addProductImage(product)
+        }
+
+        let storyboard :UIStoryboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let vc : ReviewProductsViewController = storyboard.instantiateViewController(withIdentifier: "ReviewProductsViewController") as! ReviewProductsViewController
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }

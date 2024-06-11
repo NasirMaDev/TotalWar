@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if(UserDefaults.standard.value(forKey: "SheetName") == nil){
             UserDefaults.standard.set(Constant.SheetID, forKey: "SheetID")
-            UserDefaults.standard.set("Sheet1", forKey: "SheetName")
+            UserDefaults.standard.set("Ventes", forKey: "SheetName")
             UserDefaults.standard.set("A2", forKey: "StartingColumn")
             UserDefaults.standard.set("AM100", forKey: "EndingColumn")
             UserDefaults.standard.set("P-", forKey: "BarCodePrefix")
