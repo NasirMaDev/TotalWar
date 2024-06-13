@@ -21,7 +21,6 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     var currentFilter : CIFilter? = nil
     var captureImage: Bool = false
     var ciContext: CIContext!
-    var filter: CIFilter!
     var filteredImageView: UIImageView!
     let filters: [CIFilter?] = [
         nil,
@@ -105,6 +104,14 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         captureSession.stopRunning()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if captureSession != nil{
+            self.captureSession.startRunning()
+        }
+    }
+
+
     func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: captureSession)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: captureSession)
@@ -157,8 +164,6 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         view.addSubview(filteredImageView)
 
         ciContext = CIContext()
-        filter = CIFilter(name: "CISepiaTone")
-        filter.setValue(0.8, forKey: kCIInputIntensityKey)
 
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.captureSession.startRunning()
@@ -191,12 +196,21 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         let transform = CGAffineTransform(rotationAngle: angleForVideoOrientation(orientation))
         ciImage = ciImage.transformed(by: transform)
 
+        // Crop the CIImage to a square
+          ciImage = cropToSquare(ciImage)
+          print("Cropped CIImage extent: \(ciImage.extent)")
+
+
+
         // Apply the filter if currentFilter is not nil
         if let currentFilter = currentFilter {
             currentFilter.setValue(ciImage, forKey: kCIInputImageKey)
 
             guard let outputImage = currentFilter.outputImage,
-                  let cgImage = ciContext.createCGImage(outputImage, from: outputImage.extent) else { return }
+                let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent) else {
+                      print("Failed to create CGImage")
+                      return
+                  }
 
             let filteredUIImage = UIImage(cgImage: cgImage)
             DispatchQueue.main.async { [weak self] in
@@ -204,7 +218,8 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             }
 
             if captureImage {
-                self.capturedImages.append(filteredUIImage)
+                let rotationAngle = angleForVideoOrientation(orientation)
+                rotateAndAppend(image: filteredUIImage, angle: rotationAngle, to: &capturedImages)
                 captureImage = false
                 DispatchQueue.main.async { [weak self] in
                     guard let self else {return}
@@ -216,7 +231,10 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             }
         } else {
             // No filter applied, just convert the CIImage to UIImage
-            guard let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent) else { return }
+            guard let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent) else {
+                print("Failed to create CGImage")
+                return
+            }
 
             let filteredUIImage = UIImage(cgImage: cgImage)
             DispatchQueue.main.async { [weak self] in
@@ -224,7 +242,8 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             }
 
             if captureImage {
-                self.capturedImages.append(filteredUIImage)
+                let rotationAngle = angleForVideoOrientation(orientation)
+                rotateAndAppend(image: filteredUIImage, angle: rotationAngle, to: &capturedImages)
                 captureImage = false
                 DispatchQueue.main.async { [weak self] in
                     guard let self else {return}
@@ -251,6 +270,66 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             return 0
         }
     }
+
+    // Example function to get video orientation from capture session
+    func getVideoOrientation(from captureSession: AVCaptureSession) -> AVCaptureVideoOrientation {
+        // Check if there is a video data output
+        guard let videoOutput = captureSession.outputs.first(where: { $0 is AVCaptureVideoDataOutput }) as? AVCaptureVideoDataOutput else {
+            print("No video data output found in capture session.")
+            return .portrait
+        }
+
+        // Get the connection associated with the video data output
+        guard let connection = videoOutput.connection(with: .video) else {
+            print("No connection found for video data output.")
+            return .portrait
+        }
+
+        // Return the current video orientation
+        return connection.videoOrientation
+    }
+
+
+    func rotateAndAppend(image: UIImage, angle: CGFloat, to array: inout [UIImage]) {
+        // Create a rotated version of the image
+        UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale)
+        let context = UIGraphicsGetCurrentContext()!
+
+        context.translateBy(x: image.size.width / 2, y: image.size.height / 2)
+        context.rotate(by: angle)
+        context.scaleBy(x: 1.0, y: -1.0)
+        context.translateBy(x: -image.size.width / 2, y: -image.size.height / 2)
+
+        context.draw(image.cgImage!, in: CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height))
+
+        let rotatedImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+
+        // Append rotated image to the array
+        array.append(rotatedImage)
+    }
+
+
+    private func cropToSquare(_ ciImage: CIImage) -> CIImage {
+        let extent = ciImage.extent 
+
+        let originalWidth = extent.width
+        let originalHeight = extent.height
+        let sideLength = min(originalWidth, originalHeight)
+//
+//        // Ensure x and y are within valid bounds
+//        let x = max(0, (originalWidth - sideLength) / 2)
+//        let y = max(0, (originalHeight - sideLength) / 2)
+
+        let cropRect = CGRect(x: extent.minX, y: extent.minY, width: sideLength, height: sideLength)
+        let croppedImage = ciImage.cropped(to: cropRect)
+
+        print("Original CIImage extent: \(extent)")
+        print("Cropped CIImage extent: \(croppedImage.extent)")
+
+        return croppedImage
+    }
+
 
     func setupUI() {
         view.addSubview(captureButton)

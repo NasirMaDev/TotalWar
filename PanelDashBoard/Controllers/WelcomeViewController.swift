@@ -35,7 +35,7 @@ class WelcomeViewController: UIViewController {
         enhanceView.isUserInteractionEnabled = true
         enhanceView.addGestureRecognizer(tapGesture3)
         
-        
+        ProductImageManager.shared.removeAllProducts()
     }
     
     override func viewWillAppear(_ animated: Bool) {
