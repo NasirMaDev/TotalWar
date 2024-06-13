@@ -16,6 +16,7 @@ class ImageEnchanceViewController: UIViewController{
     @IBOutlet weak var imagesCV: UICollectionView!
     @IBOutlet weak var imagesPager: UIPageControl!
     @IBOutlet weak var nextBtn: UIButton!
+    @IBOutlet weak var btnStackView: UIStackView!
     
     var imagesModel : [ProductImagesModel] = []
     var product : ProductToUpload?
@@ -36,7 +37,7 @@ class ImageEnchanceViewController: UIViewController{
         imagesCV.dataSource = self
         imagesPager.numberOfPages = imagesModel.count
         imagesPager.currentPage = 0
-        //nextBtn.isHidden = !showNextBtn
+        btnStackView.isHidden = !showNextBtn
     }
 
 

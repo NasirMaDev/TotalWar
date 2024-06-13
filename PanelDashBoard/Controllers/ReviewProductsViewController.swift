@@ -296,7 +296,7 @@ extension ReviewProductsViewController:UICollectionViewDelegate,UICollectionView
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let detailsVC = storyboard.instantiateViewController(withIdentifier: "ProductDetailViewController") as? ProductDetailViewController {
             detailsVC.product = model
-            detailsVC.showbtnOptions = false
+            //detailsVC.showbtnOptions = false
             self.navigationController?.pushViewController(detailsVC, animated: true)
         }
     }

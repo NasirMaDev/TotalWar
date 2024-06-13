@@ -19,7 +19,7 @@ class ProductDetailViewController: UIViewController {
     @IBOutlet weak var bottomStackView: UIStackView!
     var product : ProductToUpload?
     var selectedIndex : Int = 0
-    var showbtnOptions: Bool = true
+    //var showbtnOptions: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,9 +30,9 @@ class ProductDetailViewController: UIViewController {
         let image = product?.images[selectedIndex]
         self.selectedImage.image = image
         
-        if !showbtnOptions{
-            bottomStackView.isHidden = true
-        }
+//        if !showbtnOptions{
+//            bottomStackView.isHidden = true
+//        }
     }
     
     @IBAction func addNewProduct(_ sender: Any) {
@@ -79,15 +79,8 @@ extension ProductDetailViewController:UICollectionViewDelegate,UICollectionViewD
             if self.product?.images.count == 0{
                 let alertController = UIAlertController(title: "Error", message: "All product images deleted", preferredStyle: .alert)
                 let alertbutton = UIAlertAction(title: "OK", style: .cancel, handler:{(action: UIAlertAction!) in
-                    ProductImageManager.shared.removeAllProducts()
-                    //self.navigationController?.popViewController(animated: true)
-                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let mainTabBarController = storyboard.instantiateViewController(identifier: "CustomTabBarController") as! MyTabBarController
-                    mainTabBarController.selectedIndex = 1
-                    // Set the tab bar controller as the root view controller
-                    UIApplication.shared.windows.first?.rootViewController = mainTabBarController
-                    UIApplication.shared.windows.first?.makeKeyAndVisible()
-                   
+                    ProductImageManager.shared.removeProductImage(at:indexPath.row)
+                    self.navigationController?.popViewController(animated: true)
                 } )
                 alertController.addAction(alertbutton)
                 self.present(alertController, animated: true, completion: nil)
