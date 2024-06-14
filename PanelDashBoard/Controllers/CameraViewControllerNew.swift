@@ -22,6 +22,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
     var captureImage: Bool = false
     var ciContext: CIContext!
     var filteredImageView: UIImageView!
+    var currentOrientation : AVCaptureVideoOrientation = .portrait
     let filters: [CIFilter?] = [
         nil,
         CIFilter(name: "CIPhotoEffectChrome")!,
@@ -116,6 +117,32 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError), name: .AVCaptureSessionRuntimeError, object: captureSession)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted), name: .AVCaptureSessionWasInterrupted, object: captureSession)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded), name: .AVCaptureSessionInterruptionEnded, object: captureSession)
+        NotificationCenter.default.addObserver(
+               self,
+               selector: #selector(deviceOrientationDidChange),
+               name: UIDevice.orientationDidChangeNotification,
+               object: nil
+           )
+    }
+
+    @objc func deviceOrientationDidChange() {
+        updateVideoOrientation()
+    }
+
+    func updateVideoOrientation() {
+        guard let connection = videoPreviewLayer?.connection else { return }
+        switch UIDevice.current.orientation {
+        case .portrait:
+            currentOrientation = .portrait
+        case .landscapeLeft:
+            currentOrientation = .landscapeRight
+        case .landscapeRight:
+            currentOrientation = .landscapeLeft
+        case .portraitUpsideDown:
+            currentOrientation = .portraitUpsideDown
+        default:
+            currentOrientation = .portrait
+        }
     }
 
     func removeObservers() {
@@ -185,6 +212,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         )
         videoPreviewLayer.frame = squareFrame
         filteredImageView.frame = squareFrame
+        videoPreviewLayer.connection?.videoOrientation = .portrait
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -197,10 +225,8 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
         ciImage = ciImage.transformed(by: transform)
 
         // Crop the CIImage to a square
-          ciImage = cropToSquare(ciImage)
-          print("Cropped CIImage extent: \(ciImage.extent)")
-
-
+        ciImage = cropToSquare(ciImage)
+        print("videoOrientation: \(currentOrientation)")
 
         // Apply the filter if currentFilter is not nil
         if let currentFilter = currentFilter {
@@ -218,7 +244,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             }
 
             if captureImage {
-                let rotationAngle = angleForVideoOrientation(orientation)
+                let rotationAngle = angleForVideoOrientation(currentOrientation)
                 rotateAndAppend(image: filteredUIImage, angle: rotationAngle, to: &capturedImages)
                 captureImage = false
                 DispatchQueue.main.async { [weak self] in
@@ -242,7 +268,7 @@ class CameraViewControllerNew : UIViewController, AVCapturePhotoCaptureDelegate,
             }
 
             if captureImage {
-                let rotationAngle = angleForVideoOrientation(orientation)
+                let rotationAngle = angleForVideoOrientation(currentOrientation)
                 rotateAndAppend(image: filteredUIImage, angle: rotationAngle, to: &capturedImages)
                 captureImage = false
                 DispatchQueue.main.async { [weak self] in
