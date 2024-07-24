@@ -33,6 +33,23 @@ class ImageEditViewController: UIViewController {
             self.imageToEdit.image = image
         }
         
+        let settings = SettingsManager.shared
+
+        if !settings.isInitialized {
+            print("Values have not been set yet. Initializing to defaults.")
+        } else {
+            print("Values have been set previously.")
+            self.currentExposure = SettingsManager.shared.currentExposure
+            self.currentBrightness = SettingsManager.shared.currentBrightness
+            self.currentSaturation = SettingsManager.shared.currentSaturation
+            if let image {
+                imageToEdit.image = self.applyImageFilter(for: image)
+            }
+            
+            sliderValue.text = "\(currentBrightness)%"
+            optionSlider.value = Float(currentBrightness)
+        }
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -126,6 +143,16 @@ class ImageEditViewController: UIViewController {
     
     @IBAction func savePressed(_ sender: Any) {
         completionHandler?(self.imageToEdit.image!)
+        
+        let settings = SettingsManager.shared
+
+        if currentBrightness != 50.0 || currentExposure != 50.0 || currentSaturation != 50.0{
+            settings.isInitialized = true
+            settings.currentBrightness = self.currentBrightness
+            settings.currentExposure = self.currentExposure
+            settings.currentSaturation = self.currentSaturation
+        }
+        
         self.navigationController?.popViewController(animated: true)
     }
     

@@ -25,13 +25,19 @@ class ImageEnchanceViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        //if let capturedImages = capturedImages {
-            for (index, item) in capturedImages.enumerated() {
-                let isSelected = index == 0
+        
+        let settings = SettingsManager.shared
+        
+        for (index, item) in capturedImages.enumerated() {
+            let isSelected = index == 0
+            if settings.isInitialized{
+                let enchanedImage = applyImageFilter(for: item)
+                imagesModel.append(ProductImagesModel(OgImage: item, enchanedImage: enchanedImage, selected: isSelected, showOriginal: false))
+            }else{
                 imagesModel.append(ProductImagesModel(OgImage: item, enchanedImage: nil, selected: isSelected))
             }
-        //}
+        }
+        
         imagesCV.isPagingEnabled = true
         imagesCV.delegate = self
         imagesCV.dataSource = self
@@ -53,6 +59,32 @@ class ImageEnchanceViewController: UIViewController{
         body += "--\(boundary)--\r\n"
         
         return body.data(using: .utf8) ?? Data()
+    }
+    
+    func applyImageFilter(for image: UIImage) -> UIImage? {
+        guard let sourceImage = CIImage(image: image) else { return nil }
+        let settings = SettingsManager.shared
+        let brightnessValue = (settings.currentBrightness - 50) / 50.0
+        let exposureValue = (settings.currentExposure - 50) / 50.0
+        let saturationValue = settings.currentSaturation / 50.0
+
+        let brightnessFilter = CIFilter(name: "CIColorControls")
+        brightnessFilter?.setValue(sourceImage, forKey: kCIInputImageKey)
+        brightnessFilter?.setValue(brightnessValue, forKey: kCIInputBrightnessKey)
+        brightnessFilter?.setValue(saturationValue, forKey: kCIInputSaturationKey)
+
+        let exposureFilter = CIFilter(name: "CIExposureAdjust")
+        exposureFilter?.setValue(brightnessFilter?.outputImage, forKey: kCIInputImageKey)
+        exposureFilter?.setValue(exposureValue, forKey: kCIInputEVKey)
+
+        guard let output = exposureFilter?.outputImage else { return nil }
+
+        // Convert currentAngle (0 to 100) to radians (0 to 2π)
+        //let radians = Float(currentAngle) * (2 * .pi) / 100.0
+
+        let outputImage = UIImage(ciImage: output, scale: image.scale, orientation: image.imageOrientation)
+
+        return outputImage
     }
     
     @IBAction func enchanceWithAI(_ sender: Any) {
@@ -138,6 +170,7 @@ class ImageEnchanceViewController: UIViewController{
     }
 
     @IBAction func addProductPressed(_ sender: Any) {
+        product?.images = getImages(from: self.imagesModel)
         if let product{
             ProductImageManager.shared.addProductImage(product)
         }
@@ -149,6 +182,7 @@ class ImageEnchanceViewController: UIViewController{
     }
     
     @IBAction func submitPressed(_ sender: Any) {
+        product?.images = getImages(from: self.imagesModel)
         if let product{
             ProductImageManager.shared.addProductImage(product)
         }

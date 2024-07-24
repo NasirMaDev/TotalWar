@@ -23,6 +23,7 @@ class ReviewProductsViewController: UIViewController {
     var AWSUploadcount = 0
     var imageeUrl : String?
     var scanedBarcode : String?
+    var storageCode : String?
 
     @IBOutlet weak var productsCV: UICollectionView!
     
@@ -38,7 +39,35 @@ class ReviewProductsViewController: UIViewController {
         productsCV.reloadData()
     }
     
+    @IBAction func scanPressed(_ sender: Any) {
+        let viewController = BarcodeScannerViewController()
+        viewController.cameraViewController.barCodeFocusViewType = .animated
+        viewController.codeDelegate = self
+        viewController.errorDelegate = self
+        viewController.dismissalDelegate = self
+        viewController.isOneTimeSearch = false
+        viewController.messageViewController.regularTintColor = .black
+        viewController.messageViewController.errorTintColor = .red
+        viewController.messageViewController.textLabel.textColor = .black
+        viewController.headerViewController.titleLabel.text = "Scan item barcode"
+        viewController.headerViewController.closeButton.tintColor = .red
+        present(viewController, animated: false, completion: nil)
+    }
+    
+    
     @IBAction func uploadPressed(_ sender: Any) {
+        
+        
+        if storageCode == nil{
+            let alertController = UIAlertController(title: "Alert", message: "Please scan code First", preferredStyle: .alert)
+            let alertbutton = UIAlertAction(title: "OK", style: .cancel, handler:{(action: UIAlertAction!) in
+                self.dismiss(animated: true, completion: nil)
+            } )
+            alertController.addAction(alertbutton)
+            self.present(alertController, animated: true, completion: nil)
+            return
+        }
+        
         print("Upload to aws")
         SVProgressHUD.show()
         guard let BarCodePrefix = UserDefaults.standard.value(forKey: "BarCodePrefix") else{
@@ -299,5 +328,30 @@ extension ReviewProductsViewController:UICollectionViewDelegate,UICollectionView
             //detailsVC.showbtnOptions = false
             self.navigationController?.pushViewController(detailsVC, animated: true)
         }
+    }
+}
+
+
+extension ReviewProductsViewController: BarcodeScannerCodeDelegate {
+    func scanner(_ controller: BarcodeScannerViewController, didCaptureCode code: String, type: String) {
+        print(code)
+        appDelegate?.scannedItems.append(code)
+        let unique = appDelegate?.scannedItems.uniqued()
+        appDelegate?.scannedItems = unique ?? []
+        //manageSaveItemButton()
+        storageCode = code
+    }
+}
+
+extension ReviewProductsViewController: BarcodeScannerErrorDelegate {
+    func scanner(_ controller: BarcodeScannerViewController, didReceiveError error: Error) {
+        print(error)
+    }
+}
+
+extension ReviewProductsViewController: BarcodeScannerDismissalDelegate {
+    func scannerDidDismiss(_ controller: BarcodeScannerViewController) {
+        controller.dismiss(animated: true, completion: nil)
+       //manageSaveItemButton()
     }
 }
