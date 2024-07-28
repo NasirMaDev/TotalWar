@@ -22,8 +22,8 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
     @IBOutlet weak var saveItemBtn: UIButton!
     
     var timer: Timer?
-    var AllProducts = [Product]()
-    var filteredData = [Product]()
+    var AllProducts = [Productv2]()
+    var filteredData = [Productv2]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,26 +74,27 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
         guard let StartingColumn = UserDefaults.standard.value(forKey: "StartingColumn") else {
             return
         }
-        
-        
-        guard let BaseURL = UserDefaults.standard.value(forKey: "BaseURL") else {
+        //using new base url
+        guard let BaseURL = UserDefaults.standard.value(forKey: "BaseURLv2") else {
             return
         }
-        
-        RemoteRequest.requestPostURL("\(BaseURL)\(Constant.helperURL)", params: ["action":"getSheetsProductsWithUrl","spreadSheetId":SheetID,"sheetName":SheetName,"barCodeSearchColumn":StartingColumn], success: { response in
+        let helperURL = "api/v2/Data/getSheetsProductsWithUrl?spreadsheetId=\(SheetID)&sheetName=\(SheetName)"
+        RemoteRequest.requestNewPostURL("\(BaseURL)\(helperURL)", params: [:], success: { (products: [Productv2]) in
+            print(products)
             
-            print(response)
-            if let allProducts = (response as? NSDictionary)?.value(forKey: "allProducts") as? [NSDictionary] {
-                self.AllProducts = allProducts.compactMap { Product(dictionary: $0) }
-                self.filteredData = self.AllProducts
+            self.AllProducts = products
+            self.filteredData = products
+            
+            // Reload the collection view to display the products
+            DispatchQueue.main.async {
                 self.ShowProductCollectionView.reloadData()
             }
+            
             SVProgressHUD.dismiss()
-            
         }) { error in
-            
+            print("Network request failed: \(error)")
+            SVProgressHUD.dismiss()
         }
-        
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -116,7 +117,7 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
         if searchText.isEmpty {
             filteredData = AllProducts
         } else {
-            filteredData = AllProducts.filter { $0.barCode.lowercased().contains(searchText.lowercased()) }
+            filteredData = AllProducts.filter { $0.lotID!.lowercased().contains(searchText.lowercased()) }
         }
         DispatchQueue.main.async {
             self.ShowProductCollectionView.reloadData()
@@ -171,7 +172,7 @@ extension ShowProductViewController:UICollectionViewDelegate,UICollectionViewDel
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = (self.ShowProductCollectionView.dequeueReusableCell(withReuseIdentifier: "ShowProductsCell", for: indexPath) as? ShowProductCell)!
         let product = self.filteredData[indexPath.row]
-        let imgURl = product.barCodePictureUrl!
+        let imgURl = product.picURL ?? ""
         cell.imgBarCode.downloaded(from: imgURl, contentMode: .scaleAspectFit) { result in
             switch result {
             case .success(let image):
@@ -182,7 +183,8 @@ extension ShowProductViewController:UICollectionViewDelegate,UICollectionViewDel
                 //SVProgressHUD.dismiss()
             }
         }
-        cell.productName.text = product.barCode
+        cell.productName.text = product.lotID
+        cell.productPrice.text = product.newValue ?? ""
         return cell
     }
     

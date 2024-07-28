@@ -65,3 +65,71 @@ struct ProductToUpload: Codable {
            try container.encode(barCodeURLPostFix, forKey: .barCodeURLPostFix)
        }
 }
+
+struct Productv2: Codable {
+    let productID: String?
+    let lotID: String?
+    let universe: String?
+    let army: String?
+    let key: String?
+    let quantity: String?
+    let figurine: String?
+    let type: String?
+    let id: String? // Assuming this field might be empty
+    let assigned: String?
+    let translationEN: String?
+    let condition: String?
+    let remarks: String?
+    let receivedQuantity: String?
+    let assembly: String?
+    let newValue: String?
+    let expectedSale: String?
+    let chapter: String?
+    let location: String?
+    let ebayCategory: String?
+    let format: String?
+    let listed: String?
+    let shortDescriptionEN: String?
+    let longDescriptionEN: String?
+    let chapterRegiment: String?
+    let picURL: String?
+    let categoryPS: String?
+    let proxy: String?
+    let conversion: String?
+    let complete: String?
+    let brand: String?
+
+    enum CodingKeys: String, CodingKey {
+        case productID = "Product ID"
+        case lotID = "ID Lot"
+        case universe = "Univers"
+        case army = "Armée"
+        case key = "Clé"
+        case quantity = "Nombre"
+        case figurine = "Figurine"
+        case type = "Type"
+        case id = ""
+        case assigned = "Attribué"
+        case translationEN = "Traduction EN"
+        case condition = "Etat"
+        case remarks = "Remarques"
+        case receivedQuantity = "Quantité reçue"
+        case assembly = "Montage"
+        case newValue = "valeur neuf"
+        case expectedSale = "espérance vente"
+        case chapter = "Chapitre"
+        case location = "Emplacement"
+        case ebayCategory = "categorie ebay"
+        case format = "Format"
+        case listed = "Mis en vente"
+        case shortDescriptionEN = "Short Description EN"
+        case longDescriptionEN = "Long Description EN"
+        case chapterRegiment = "Chapitre / régiment"
+        case picURL = "PIC URL"
+        case categoryPS = "Categorie PS"
+        case proxy = "Proxy"
+        case conversion = "Conversion"
+        case complete = "Complet"
+        case brand = "Marque"
+    }
+}

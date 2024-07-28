@@ -11,6 +11,7 @@ import UIKit
 class Constant: NSObject {
     
     public static var BaseURL = "http://13.215.157.194"
+    public static var BaseURLv2 = "https://prestashop-ruby.vercel.app/"
     public static var helperURL = "/sheets.php"
     public static var inboundURL = "/locationupdates"
     public static var SheetID = "1ta_VfXHa2ngV4jjfNTTV76w_bp5VTslusr_TPOzPazY"

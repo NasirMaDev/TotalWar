@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.standard.set(Constant.BaseURL, forKey: "BaseURL")
             UserDefaults.standard.set("K1JT27KREG7M44965ME3YYCWL3QBGEYW", forKey: "PrestaAPIKey")
         }
-        
+        UserDefaults.standard.set(Constant.BaseURLv2, forKey: "BaseURLv2")
     }
     
     // Initialize the Amazon Cognito credentials provider

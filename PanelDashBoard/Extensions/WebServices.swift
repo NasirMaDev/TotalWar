@@ -79,6 +79,45 @@ class RemoteRequest: NSObject {
             }
         }
     }
+    
+    class func requestNewPostURL<T: Decodable>(_ strURL: String, params: Parameters, success:@escaping (T) -> Void, failure:@escaping (NSError) -> Void) {
+          let header = [
+              "Content-Type":"application/json"
+          ]
+          
+          Alamofire.request(strURL, method: .post, parameters: params, encoding: JSONEncoding.default, headers: header).responseData { response in
+              print("POST \(strURL)")
+              print(params)
+              if let responseData = response.data {
+                  print(String(data: responseData, encoding: .utf8) ?? "some data")
+              }
+              print("Response : \(String(describing: response))")
+              
+              if response.error == nil {
+                  guard let responseData = response.data else {
+                      let error = NSError(domain: "No data in response", code: 400, userInfo: nil)
+                      failure(error)
+                      return
+                  }
+                  
+                  do {
+                      let decodedObject = try JSONDecoder().decode(T.self, from: responseData)
+                      success(decodedObject)
+                  } catch {
+                      print("Failed to decode JSON: \(error)")
+                      let decodingError = NSError(domain: error.localizedDescription, code: 400, userInfo: nil)
+                      failure(decodingError)
+                  }
+              } else {
+                  if let responseData = response.data {
+                      print(String(data: responseData, encoding: .utf8) ?? "some data")
+                  }
+                  print(response.error?.localizedDescription ?? "")
+                  let networkError = NSError(domain: response.error?.localizedDescription ?? "", code: 400, userInfo: nil)
+                  failure(networkError)
+              }
+          }
+      }
         
         
     class func requestPostURLWithToken(_ strURL: String,params:Parameters, success:@escaping (Any) -> Void, failure:@escaping (NSError) -> Void) {
