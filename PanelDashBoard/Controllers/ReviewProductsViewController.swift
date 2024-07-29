@@ -39,6 +39,34 @@ class ReviewProductsViewController: UIViewController {
         productsCV.reloadData()
     }
     
+    func createAPIParameters(barCode: String, Images : [UIImage]) -> [String: Any] {
+        let params: [String: Any] = [
+            "catID": "1",
+            "supID": "1",
+            "manID": "1",
+            "newProd": "1",
+            "idTaxRule": "1",
+            "refCode": "1",
+            "supRef": "1",
+            "ean13": barCode,
+            "state": "1",
+            "prodType": "standard",
+            "price": "0.0",
+            "unitPrice": "0.0",
+            "name": "Product",
+            "active": "1",
+            "desc": "Description",
+            "shortDesc": "Short Description",
+            "quantity": "1",
+            "mpn": "1",
+            "productImage": Images
+        ]
+        
+        return params
+    }
+
+  
+    
     @IBAction func scanPressed(_ sender: Any) {
         let viewController = BarcodeScannerViewController()
         viewController.cameraViewController.barCodeFocusViewType = .animated
@@ -82,84 +110,119 @@ class ReviewProductsViewController: UIViewController {
             alertController.addAction(alertbutton)
             self.present(alertController, animated: true, completion: nil)
         }else{
-            let prefix = BarCodePrefix as! String
-            var newarraybarcode:[String] = []
-            for i in 0..<self.allProducts.count{
-                
-                if(self.allProducts[i].barcode!.contains(prefix)){
-                    
-                    newarraybarcode.append(self.allProducts[i].barcode!)
-                    
-                }else{
-                    
-                    newarraybarcode.append("\(prefix)\(self.allProducts[i].barcode!)")
-                }
-               
-                
-                
-           }
-            let uniqueElements = newarraybarcode.uniqueElements()
+//            let prefix = BarCodePrefix as! String
+//            var newarraybarcode:[String] = []
+//            for i in 0..<self.allProducts.count{
+//                
+//                if(self.allProducts[i].barcode!.contains(prefix)){
+//                    
+//                    newarraybarcode.append(self.allProducts[i].barcode!)
+//                    
+//                }else{
+//                    
+//                    newarraybarcode.append("\(prefix)\(self.allProducts[i].barcode!)")
+//                }
+//                
+//                
+//                
+//            }
+//            let uniqueElements = newarraybarcode.uniqueElements()
+//            
+//            for i in 0..<uniqueElements.count{
+//                var index = 0
+//                for j in 0..<self.allProducts.count{
+//                    
+//                    if(self.allProducts[j].barcode == uniqueElements[i]){
+//                        if(self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-").count > 1){
+//                            if(index == 0){
+//                                index = Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + 1
+//                                self.allProducts[j].barCodeURLPostFix = "-\(Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + 1)"
+//                            }
+//                            else if(index == 1){
+//                                if(Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! == 0){
+//                                    index = Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + 2
+//                                    self.allProducts[j].barCodeURLPostFix = "-\(Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + 2)"
+//                                }else{
+//                                    index = Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + index
+//                                    self.allProducts[j].barCodeURLPostFix = "-\(Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + index)"
+//                                }
+//                                
+//                            }else{
+//                                
+//                                index = index + 1
+//                                self.allProducts[j].barCodeURLPostFix = "-\(index)"
+//                            }
+//                        }
+//                        
+//                        
+//                    }
+//                }
+//            }
+//            
+//            //For counting Scanned Pictures We have
+//            
+//            for (i,item) in self.allProducts.enumerated()
+//            {
+//                if(item.status == "Scanned")
+//                {
+//                    self.AWSUploadcount = self.AWSUploadcount + 1
+//                }
+//            }
+//            
+//            
+//            
+//            for (i,item) in self.allProducts.enumerated()
+//            {
+//                if(item.status == "Scanned")
+//                {
+//                    
+//                    if(self.allProducts[i].barcode!.contains("\(BarCodePrefix)")){
+//                        self.allProducts[i].barcode = self.allProducts[i].barcode!.replacingOccurrences(of: "\(BarCodePrefix)", with: "")
+//                        
+//                        UploadImageToAws(withImage: self.allProducts[i].images.first!,barCode: self.allProducts[i].barcode!, index: self.allProducts[i].barCodeURLPostFix)
+//                    }else{
+//                        UploadImageToAws(withImage: self.allProducts[i].images.first!,barCode: self.allProducts[i].barcode!, index: self.allProducts[i].barCodeURLPostFix)
+//                    }
+//                    
+//                }
+//            }
+//            
             
-            for i in 0..<uniqueElements.count{
-                var index = 0
-                for j in 0..<self.allProducts.count{
-                    
-                    if(self.allProducts[j].barcode == uniqueElements[i]){
-                        if(self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-").count > 1){
-                            if(index == 0){
-                                index = Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + 1
-                                self.allProducts[j].barCodeURLPostFix = "-\(Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + 1)"
-                            }
-                            else if(index == 1){
-                                if(Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! == 0){
-                                    index = Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + 2
-                                    self.allProducts[j].barCodeURLPostFix = "-\(Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + 2)"
-                                }else{
-                                    index = Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + index
-                                    self.allProducts[j].barCodeURLPostFix = "-\(Int((self.allProducts[j].barCodeURLPostFix.components(separatedBy: "-")[1]))! + index)"
-                                }
-                               
-                            }else{
-                                
-                                index = index + 1
-                                self.allProducts[j].barCodeURLPostFix = "-\(index)"
-                            }
-                        }
-                       
-                       
-                    }
-                }
+            guard let baseURL = UserDefaults.standard.string(forKey: "BaseURLv2") else {
+                print("BaseURLv2 not found in UserDefaults")
+                return
             }
             
-            //For counting Scanned Pictures We have
-            
-            for (i,item) in self.allProducts.enumerated()
-            {
-                if(item.status == "Scanned")
-                {
-                    self.AWSUploadcount = self.AWSUploadcount + 1
-                }
+            guard let prestaAPIKey = UserDefaults.standard.string(forKey: "PrestaAPIKey") else {
+                print("PrestaAPIKey not found in UserDefaults")
+                return
             }
             
+            let helperURL = "api/v2/Product/createProduct"
+            let fullURL = "\(baseURL)/\(helperURL)"
+            let boundary = "Boundary-\(UUID().uuidString)"
             
+            let headers: [String: String] = [
+                "Authorization": prestaAPIKey,
+                "Content-Type": "multipart/form-data; boundary=\(boundary)"
+            ]
             
-             for (i,item) in self.allProducts.enumerated()
-             {
-                 if(item.status == "Scanned")
-                 {
+            // Example usage:
+            for (i,item) in self.allProducts.enumerated(){
+                let apiParameters = createAPIParameters(barCode: allProducts[i].barcode ?? "", Images: allProducts[i].images)
+                
+                RemoteRequest.requestPostURL(fullURL, headers: headers, params: apiParameters, success: { response in
+                    print("Response: \(response)")
                     
-                     if(self.allProducts[i].barcode!.contains("\(BarCodePrefix)")){
-                         self.allProducts[i].barcode = self.allProducts[i].barcode!.replacingOccurrences(of: "\(BarCodePrefix)", with: "")
-                         
-                         UploadImageToAws(withImage: self.allProducts[i].images.first!,barCode: self.allProducts[i].barcode!, index: self.allProducts[i].barCodeURLPostFix)
-                     }else{
-                         UploadImageToAws(withImage: self.allProducts[i].images.first!,barCode: self.allProducts[i].barcode!, index: self.allProducts[i].barCodeURLPostFix)
-                     }
-                   
-                 }
-             }
-            
+                }) { error in
+                    print("Error: \(error)")
+                    SVProgressHUD.dismiss()
+                }
+                
+            }
         }
+        
+        
        
     }
     

@@ -79,7 +79,7 @@ class ShowProductViewController: UIViewController, UISearchBarDelegate {
             return
         }
         let helperURL = "api/v2/Data/getSheetsProductsWithUrl?spreadsheetId=\(SheetID)&sheetName=\(SheetName)"
-        RemoteRequest.requestNewPostURL("\(BaseURL)\(helperURL)", params: [:], success: { (products: [Productv2]) in
+        RemoteRequest.requestNewPostURL("\(BaseURL)\(helperURL)", success: { (products: [Productv2]) in
             print(products)
             
             self.AllProducts = products

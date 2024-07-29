@@ -41,17 +41,28 @@ class RemoteRequest: NSObject {
         
         var request = URLRequest(url: NSURL(string: strURL)! as URL)
         request.allHTTPHeaderFields = headers
-        request.timeoutInterval = 20
+        request.timeoutInterval = 30
         Alamofire.upload(multipartFormData: { (multipartFormData) in
+            var imageIndex = 1
             for (key, value) in params {
-                    if key == "image", let image = value as? UIImage {
-                        if let imageData = image.jpegData(compressionQuality: 0.2) {
-                            multipartFormData.append(imageData, withName: key, fileName: "image.jpeg", mimeType: "image/jpeg")
-                        }
-                    } else if let stringValue = value as? String {
-                        multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
+                if key == "image", let image = value as? UIImage {
+                    if let imageData = image.jpegData(compressionQuality: 0.5) {
+                        let fileName = "image\(imageIndex).jpeg"
+                        multipartFormData.append(imageData, withName: key, fileName: fileName, mimeType: "image/jpeg")
+                        imageIndex += 1
                     }
+                } else if key == "productImage", let productImageArray = value as? [UIImage] {
+                    for productImage in productImageArray {
+                        if let imageData = productImage.jpegData(compressionQuality: 0.5) {
+                            let fileName = "productImage\(imageIndex).jpeg"
+                            multipartFormData.append(imageData, withName: key, fileName: fileName, mimeType: "image/jpeg")
+                            imageIndex += 1
+                        }
+                    }
+                } else if let stringValue = value as? String {
+                    multipartFormData.append(stringValue.data(using: .utf8)!, withName: key)
                 }
+            }
         }, to: strURL ,method: .post,headers: headers) { response in
             switch response {
             case .success(let upload, _, _):
@@ -80,14 +91,13 @@ class RemoteRequest: NSObject {
         }
     }
     
-    class func requestNewPostURL<T: Decodable>(_ strURL: String, params: Parameters, success:@escaping (T) -> Void, failure:@escaping (NSError) -> Void) {
+    class func requestNewPostURL<T: Decodable>(_ strURL: String, success:@escaping (T) -> Void, failure:@escaping (NSError) -> Void) {
           let header = [
               "Content-Type":"application/json"
           ]
           
-          Alamofire.request(strURL, method: .post, parameters: params, encoding: JSONEncoding.default, headers: header).responseData { response in
+          Alamofire.request(strURL, method: .get, encoding: JSONEncoding.default, headers: header).responseData { response in
               print("POST \(strURL)")
-              print(params)
               if let responseData = response.data {
                   print(String(data: responseData, encoding: .utf8) ?? "some data")
               }
