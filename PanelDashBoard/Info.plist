@@ -48,6 +48,10 @@
 	<array>
 		<string>Sora-Bold.ttf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>processing</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

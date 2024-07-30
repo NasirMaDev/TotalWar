@@ -25,11 +25,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.getAllValues()
         self.initializeS3()
         
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("Notification permission granted.")
+            } else if let error = error {
+                print("Notification permission denied: \(error.localizedDescription)")
+            }
+        }
        
         IQKeyboardManager.shared.enable = true
         return true
     }
     
+    // Handle notifications when the app is in the foreground
+       func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+           completionHandler([.alert, .sound])
+       }
+    
+
     func getAllValues(){
         
         if(UserDefaults.standard.value(forKey: "SheetName") == nil){

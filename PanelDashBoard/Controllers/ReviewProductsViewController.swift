@@ -24,7 +24,9 @@ class ReviewProductsViewController: UIViewController {
     var imageeUrl : String?
     var scanedBarcode : String?
     var storageCode : String?
-
+    var backgroundTask: UIBackgroundTaskIdentifier = .invalid
+    
+    
     @IBOutlet weak var productsCV: UICollectionView!
     
     override func viewDidLoad() {
@@ -97,7 +99,7 @@ class ReviewProductsViewController: UIViewController {
         }
 
         print("Upload to aws")
-        SVProgressHUD.show()
+       // SVProgressHUD.show()
         guard let BarCodePrefix = UserDefaults.standard.value(forKey: "BarCodePrefix") else{
             return
         }
@@ -110,6 +112,7 @@ class ReviewProductsViewController: UIViewController {
             alertController.addAction(alertbutton)
             self.present(alertController, animated: true, completion: nil)
         }else{
+            startUploadAndGoHome()
             //            let prefix = BarCodePrefix as! String
             //            var newarraybarcode:[String] = []
             //            for i in 0..<self.allProducts.count{
@@ -187,67 +190,118 @@ class ReviewProductsViewController: UIViewController {
             //                }
             //            }
             //
-            guard let baseURL = UserDefaults.standard.string(forKey: "BaseURLv2") else {
-                print("BaseURLv2 not found in UserDefaults")
-                return
-            }
-
-            guard let prestaAPIKey = UserDefaults.standard.string(forKey: "PrestaAPIKey") else {
-                print("PrestaAPIKey not found in UserDefaults")
-                return
-            }
-
-            let helperURL = "api/v2/Product/createProduct"
-            let fullURL = "\(baseURL)\(helperURL)"
-
-            let dispatchGroup = DispatchGroup()
-            let headers = getHeaders(key: prestaAPIKey)
-            // Example usage:
-            for (i,item) in self.allProducts.enumerated(){
-                let apiParameters = createAPIParameters(barCode: allProducts[i].barcode ?? "", Images: allProducts[i].images)
-                dispatchGroup.enter()
-                RemoteRequest.requestPostURL(fullURL, headers: headers, params: apiParameters, success: { response in
-                    print("Response: \(response)")
-                    dispatchGroup.leave()
-                    if let status = response as? Bool{
-                      print("image uploaded")
-                    }else{
-                        let alertController = UIAlertController(title: "Error", message: "Error uploading Product:\(self.allProducts[i].barcode ?? "")", preferredStyle: .alert)
-                        let alertbutton = UIAlertAction(title: "OK", style: .cancel, handler:{(action: UIAlertAction!) in
-                           
-                        } )
-                        alertController.addAction(alertbutton)
-                        self.present(alertController, animated: true, completion: nil)
-                    }
-
-                }) { error in
-                    print("Error: \(error)")
-                    SVProgressHUD.dismiss()
-                }
-
-            }
+           
             
-            dispatchGroup.notify(queue: .main) {
-                print("All uploads completed")
-                SVProgressHUD.dismiss()
-                let alertController = UIAlertController(title: "Sucess", message: "Shop Updated Sucessfully", preferredStyle: .alert)
-                let alertbutton = UIAlertAction(title: "OK", style: .cancel, handler:{(action: UIAlertAction!) in
-                    ProductImageManager.shared.removeAllProducts()
-                    //self.navigationController?.popViewController(animated: true)
-                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let mainTabBarController = storyboard.instantiateViewController(identifier: "CustomTabBarController") as! MyTabBarController
-                    mainTabBarController.selectedIndex = 1
-                    // Set the tab bar controller as the root view controller
-                    UIApplication.shared.windows.first?.rootViewController = mainTabBarController
-                    UIApplication.shared.windows.first?.makeKeyAndVisible()
-                    
-                } )
-                alertController.addAction(alertbutton)
-                self.present(alertController, animated: true, completion: nil)
-            }
         }
 
     }
+    
+    func uploadImagesInBackground(){
+        startBackgroundTask()
+        guard let baseURL = UserDefaults.standard.string(forKey: "BaseURLv2") else {
+            print("BaseURLv2 not found in UserDefaults")
+            endBackgroundTask()
+            return
+        }
+
+        guard let prestaAPIKey = UserDefaults.standard.string(forKey: "PrestaAPIKey") else {
+            print("PrestaAPIKey not found in UserDefaults")
+            return
+        }
+
+        let helperURL = "api/v2/Product/createProduct"
+        let fullURL = "\(baseURL)\(helperURL)"
+
+        let dispatchGroup = DispatchGroup()
+        var allSuccessful = true
+        var completedCount = 0
+        let totalCount = self.allProducts.count
+        
+        let headers = getHeaders(key: prestaAPIKey)
+        // Example usage:
+        for (i,item) in self.allProducts.enumerated(){
+            let apiParameters = createAPIParameters(barCode: allProducts[i].barcode ?? "", Images: allProducts[i].images)
+            dispatchGroup.enter()
+            RemoteRequest.requestPostURL(fullURL, headers: headers, params: apiParameters, success: { response in
+                print("Response: \(response)")
+                if let status = response as? Bool, status {
+                    print("Image uploaded for product: \(item.barcode ?? "")")
+                } else {
+                    allSuccessful = false
+                    self.showErrorAlert(barcode: item.barcode ?? "")
+                }
+                completedCount += 1
+                self.showProgressNotification(completed: completedCount, total: totalCount)
+                dispatchGroup.leave()
+            }) { error in
+                print("Error: \(error)")
+                allSuccessful = false
+                completedCount += 1
+                self.showProgressNotification(completed: completedCount, total: totalCount)
+                dispatchGroup.leave()
+            }
+            
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.showCompletionNotification(success: allSuccessful)
+            self.endBackgroundTask()
+        }
+    }
+    
+    
+    func startUploadAndGoHome() {
+        uploadImagesInBackground()
+        goToHomeScreen()
+    }
+    
+    func goToHomeScreen(){
+        ProductImageManager.shared.removeAllProducts()
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let mainTabBarController = storyboard.instantiateViewController(identifier: "CustomTabBarController") as! MyTabBarController
+        mainTabBarController.selectedIndex = 1
+        // Set the tab bar controller as the root view controller
+        UIApplication.shared.windows.first?.rootViewController = mainTabBarController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
+    }
+    
+    func showProgressNotification(completed: Int, total: Int) {
+        let content = UNMutableNotificationContent()
+        content.title = "Uploading Product"
+        content.body = "Uploaded \(completed) of \(total) products."
+        content.sound = .default
+        
+        let request = UNNotificationRequest(identifier: "UploadProgress", content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error showing notification: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func showErrorAlert(barcode: String) {
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Error", message: "Error uploading product: \(barcode)", preferredStyle: .alert)
+            let alertAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+            alertController.addAction(alertAction)
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+    func showCompletionNotification(success: Bool) {
+        let content = UNMutableNotificationContent()
+        content.title = "Upload Complete"
+        content.body = success ? "Products uploaded successfully." : "Some products failed to upload."
+        content.sound = .default
+        
+        let request = UNNotificationRequest(identifier: "UploadComplete", content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error showing notification: \(error.localizedDescription)")
+            }
+        }
+    }
+
 
     private func getHeaders(key: String) -> [String: String] {
             let boundary = "Boundary-\(UUID().uuidString)"
@@ -392,6 +446,22 @@ class ReviewProductsViewController: UIViewController {
            SVProgressHUD.dismiss()
        }
         
+    }
+    
+   
+
+    func startBackgroundTask() {
+        backgroundTask = UIApplication.shared.beginBackgroundTask {
+            // This block is called when the background task is about to expire
+            self.endBackgroundTask()
+        }
+    }
+
+    func endBackgroundTask() {
+        if backgroundTask != .invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask)
+            backgroundTask = .invalid
+        }
     }
     
 }
