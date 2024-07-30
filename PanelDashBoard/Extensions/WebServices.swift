@@ -41,19 +41,19 @@ class RemoteRequest: NSObject {
         
         var request = URLRequest(url: NSURL(string: strURL)! as URL)
         request.allHTTPHeaderFields = headers
-        request.timeoutInterval = 30
+        request.timeoutInterval = 60
         Alamofire.upload(multipartFormData: { (multipartFormData) in
             var imageIndex = 1
             for (key, value) in params {
                 if key == "image", let image = value as? UIImage {
-                    if let imageData = image.jpegData(compressionQuality: 0.5) {
+                    if let imageData = image.jpegData(compressionQuality: 0.2) {
                         let fileName = "image\(imageIndex).jpeg"
                         multipartFormData.append(imageData, withName: key, fileName: fileName, mimeType: "image/jpeg")
                         imageIndex += 1
                     }
                 } else if key == "productImage", let productImageArray = value as? [UIImage] {
                     for productImage in productImageArray {
-                        if let imageData = productImage.jpegData(compressionQuality: 0.5) {
+                        if let imageData = productImage.jpegData(compressionQuality: 0.2) {
                             let fileName = "productImage\(imageIndex).jpeg"
                             multipartFormData.append(imageData, withName: key, fileName: fileName, mimeType: "image/jpeg")
                             imageIndex += 1
@@ -79,8 +79,12 @@ class RemoteRequest: NSObject {
                        let urlValue = data["url"] as? String {
                         print("URL: \(urlValue)")
                         success(urlValue)
-                    } else {
-                        print("Failed to extract URL from response.")
+                    } else if let result = response.result.value as? [String: Any]{
+                        let status = result["status"] as? Bool
+                        print("Status: \(status)")
+                        success(status)
+                    }else {
+                        print("Failed to Parse response from response.")
                     }
                     
                 }
