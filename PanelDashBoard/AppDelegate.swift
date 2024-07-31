@@ -9,11 +9,12 @@
 import UIKit
 import AWSCognito
 import IQKeyboardManagerSwift
+import UserNotifications
 
 var appDelegate = UIApplication.shared.delegate as? AppDelegate
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate , UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
     var scannedItems = [String]()
@@ -28,20 +29,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
                 print("Notification permission granted.")
+                UNUserNotificationCenter.current().delegate = self
             } else if let error = error {
                 print("Notification permission denied: \(error.localizedDescription)")
             }
         }
-       
+
         IQKeyboardManager.shared.enable = true
         return true
     }
     
     // Handle notifications when the app is in the foreground
-       func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-           completionHandler([.alert, .sound])
-       }
-    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+
+        completionHandler( [.alert, .badge, .sound])
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        completionHandler()
+    }
+
 
     func getAllValues(){
         

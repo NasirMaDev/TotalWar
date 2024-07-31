@@ -190,8 +190,7 @@ class ReviewProductsViewController: UIViewController {
             //                }
             //            }
             //
-           
-            
+
         }
 
     }
@@ -213,36 +212,47 @@ class ReviewProductsViewController: UIViewController {
         let fullURL = "\(baseURL)\(helperURL)"
 
         let dispatchGroup = DispatchGroup()
+        let serialQueue = DispatchQueue(label: "com.yourapp.notificationQueue")
+        let syncQueue = DispatchQueue(label: "com.yourapp.syncQueue")
+
         var allSuccessful = true
         var completedCount = 0
         let totalCount = self.allProducts.count
-        
+
         let headers = getHeaders(key: prestaAPIKey)
-        // Example usage:
-        for (i,item) in self.allProducts.enumerated(){
-            let apiParameters = createAPIParameters(barCode: allProducts[i].barcode ?? "", Images: allProducts[i].images)
+        showInitailNotification(total: totalCount)
+        for item in self.allProducts {
             dispatchGroup.enter()
-            RemoteRequest.requestPostURL(fullURL, headers: headers, params: apiParameters, success: { response in
-                print("Response: \(response)")
-                if let status = response as? Bool, status {
-                    print("Image uploaded for product: \(item.barcode ?? "")")
-                } else {
-                    allSuccessful = false
-                    self.showErrorAlert(barcode: item.barcode ?? "")
+            serialQueue.async {
+                let apiParameters = self.createAPIParameters(barCode: item.barcode ?? "", Images: item.images)
+                self.showProgressNotification(completed: 0, total: totalCount)
+                RemoteRequest.requestPostURL(fullURL, headers: headers, params: apiParameters, success: { response in
+                    print("Response: \(response)")
+                    if let status = response as? Bool, status {
+                        print("Image uploaded for product: \(item.barcode ?? "")")
+                    } else {
+                        syncQueue.async {
+                            allSuccessful = false
+                        }
+                        //self.showErrorAlert(barcode: item.barcode ?? "")
+                    }
+                    syncQueue.async {
+                        completedCount += 1
+                        self.showProgressNotification(completed: completedCount, total: totalCount)
+                        dispatchGroup.leave()
+                    }
+                }) { error in
+                    print("Error: \(error)")
+                    syncQueue.async {
+                        allSuccessful = false
+                        completedCount += 1
+                        self.showProgressNotification(completed: completedCount, total: totalCount)
+                        dispatchGroup.leave()
+                    }
                 }
-                completedCount += 1
-                self.showProgressNotification(completed: completedCount, total: totalCount)
-                dispatchGroup.leave()
-            }) { error in
-                print("Error: \(error)")
-                allSuccessful = false
-                completedCount += 1
-                self.showProgressNotification(completed: completedCount, total: totalCount)
-                dispatchGroup.leave()
             }
-            
         }
-        
+
         dispatchGroup.notify(queue: .main) {
             self.showCompletionNotification(success: allSuccessful)
             self.endBackgroundTask()
@@ -285,6 +295,20 @@ class ReviewProductsViewController: UIViewController {
             let alertAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alertController.addAction(alertAction)
             self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    func showInitailNotification(total: Int) {
+        let content = UNMutableNotificationContent()
+        content.title = "Uploading Started"
+        content.body = "Uploaded 0 of \(total) products."
+        content.sound = .default
+        
+        let request = UNNotificationRequest(identifier: "UploadProgress", content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error showing notification: \(error.localizedDescription)")
+            }
         }
     }
 

@@ -46,14 +46,14 @@ class RemoteRequest: NSObject {
             var imageIndex = 1
             for (key, value) in params {
                 if key == "image", let image = value as? UIImage {
-                    if let imageData = image.jpegData(compressionQuality: 0.2) {
+                    if let imageData = image.jpegData(compressionQuality: 0.5) {
                         let fileName = "image\(imageIndex).jpeg"
                         multipartFormData.append(imageData, withName: key, fileName: fileName, mimeType: "image/jpeg")
                         imageIndex += 1
                     }
                 } else if key == "productImage", let productImageArray = value as? [UIImage] {
                     for productImage in productImageArray {
-                        if let imageData = productImage.jpegData(compressionQuality: 0.5) {
+                        if let imageData = productImage.jpegData(compressionQuality: 0.6) {
                             let fileName = "productImage\(imageIndex).jpeg"
                             multipartFormData.append(imageData, withName: key, fileName: fileName, mimeType: "image/jpeg")
                             imageIndex += 1
